@@ -7,7 +7,11 @@ import java.security.NoSuchAlgorithmException;
 
 public class SHA256 {
 
-    public static final String CHARSET_NAME = "UTF-8";
+    private static final String CHARSET_NAME = "UTF-8";
+
+    public static String ofString(String input) {
+        return ofString(input, RandomString.ofSize(64));
+    }
 
     public static String ofString(String input, String salt) {
         try {
@@ -18,10 +22,6 @@ public class SHA256 {
             e.printStackTrace();
         }
         return "error";
-    }
-
-    public static String ofString(String input) {
-        return ofString(input, RandomString.ofSize(64));
     }
 
     private static byte[] getSHA256Raw(byte[] input, byte[] salt, int iterations) throws NoSuchAlgorithmException {
