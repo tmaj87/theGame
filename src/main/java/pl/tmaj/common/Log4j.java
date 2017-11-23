@@ -11,7 +11,7 @@ public class Log4j {
 
     public Log4j(Object clazz) {
         String name = clazz.getClass().getSimpleName();
-        logger = Logger.getLogger(name);
+        this.logger = Logger.getLogger(name);
     }
 
     public void WARN(String string) {

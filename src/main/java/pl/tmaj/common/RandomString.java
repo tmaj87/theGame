@@ -4,6 +4,8 @@ import java.util.Random;
 
 public class RandomString {
 
+    private static final int ALPHABET_LENGTH = 26;
+
     public static String ofSize(int size) {
         if (size < 1) {
             return "";
@@ -17,10 +19,10 @@ public class RandomString {
                     randomString.append(random.nextInt(10));
                     break;
                 case 1: // small letters
-                    randomString.append((char) (97 + random.nextInt(26)));
+                    randomString.append((char) (97 + random.nextInt(ALPHABET_LENGTH)));
                     break;
                 case 2: // big letters
-                    randomString.append((char) (65 + random.nextInt(26)));
+                    randomString.append((char) (65 + random.nextInt(ALPHABET_LENGTH)));
                     break;
                 case 3: // special chars
                     randomString.append(specialCharacters.charAt(random.nextInt(specialCharacters.length())));
