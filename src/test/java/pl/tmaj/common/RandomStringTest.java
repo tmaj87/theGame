@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static pl.tmaj.common.RandomString.ofSize;
+import static pl.tmaj.common.RandomString.ofLength;
 
 class RandomStringTest {
 
@@ -12,14 +12,14 @@ class RandomStringTest {
 
     @Test
     void shouldHaveGivenLength() {
-        String string = ofSize(SOME_VALUE);
+        String string = ofLength(SOME_VALUE);
         assertEquals(string.length(), SOME_VALUE);
     }
 
     @Test
     void shouldBeRandom() {
-        String string1 = ofSize(SOME_VALUE);
-        String string2 = ofSize(SOME_VALUE);
+        String string1 = ofLength(SOME_VALUE);
+        String string2 = ofLength(SOME_VALUE);
         assertFalse(string1.equals(string2));
     }
 }
