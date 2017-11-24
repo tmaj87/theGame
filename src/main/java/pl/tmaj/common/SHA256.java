@@ -9,11 +9,11 @@ public class SHA256 {
 
     private static final String CHARSET_NAME = "UTF-8";
 
-    public static String ofString(String input) {
-        return ofString(input, RandomString.ofSize(64));
+    public static String of(String input) {
+        return of(input, RandomString.ofLength(64));
     }
 
-    public static String ofString(String input, String salt) {
+    public static String of(String input, String salt) {
         try {
             byte[] byteInput = input.getBytes(CHARSET_NAME);
             byte[] byteSalt = salt.getBytes(CHARSET_NAME);

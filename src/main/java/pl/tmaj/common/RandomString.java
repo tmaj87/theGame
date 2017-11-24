@@ -6,7 +6,7 @@ public class RandomString {
 
     private static final int ALPHABET_LENGTH = 26;
 
-    public static String ofSize(int size) {
+    public static String ofLength(int size) {
         if (size < 1) {
             return "";
         }

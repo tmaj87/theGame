@@ -1,6 +1,6 @@
 package pl.tmaj;
 
-import pl.tmaj.common.Log4j;
+import pl.tmaj.common.Logable;
 import pl.tmaj.common.SHA256;
 
 import java.io.IOException;
@@ -13,27 +13,26 @@ import java.util.concurrent.Executor;
 import static java.time.LocalDateTime.now;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
-class PlayerHandler {
+class PlayerHandler extends Logable {
 
-    private final Log4j log4j = new Log4j(this);
-    private final Socket socket;
+    private final Socket player;
     private final CountDownLatch gate;
     private final String userId;
 
     private ObjectOutputStream output;
     private ObjectInputStream input;
 
-    PlayerHandler(Socket socket, CountDownLatch gate) {
-        this.socket = socket;
+    PlayerHandler(Socket player, CountDownLatch gate) {
+        this.player = player;
         this.gate = gate;
-        this.userId = SHA256.ofString(now().toString());
+        this.userId = SHA256.of(now().toString());
         initCommunication();
     }
 
     private void initCommunication() {
         try {
-            output = new ObjectOutputStream(socket.getOutputStream());
-            input = new ObjectInputStream(socket.getInputStream());
+            output = new ObjectOutputStream(player.getOutputStream());
+            input = new ObjectInputStream(player.getInputStream());
         } catch (IOException e) {
             log4j.WARN(e.getMessage());
         }
@@ -49,5 +48,11 @@ class PlayerHandler {
 
     private void handleRead() {}
 
-    private void handleWrite() {}
+    private void handleWrite() {
+        try {
+            gate.await();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

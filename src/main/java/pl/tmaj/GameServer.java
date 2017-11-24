@@ -1,6 +1,6 @@
 package pl.tmaj;
 
-import pl.tmaj.common.Log4j;
+import pl.tmaj.common.Logable;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -10,12 +10,11 @@ import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
-public class GameServer {
+public class GameServer extends Logable {
 
-    private final Log4j log4j = new Log4j(this);
-    private static final ExecutorService pool = newCachedThreadPool();
-    private static final boolean INFINITE = true;
     private static final int PORT = 9191;
+    private static final ExecutorService pool = newCachedThreadPool();
+    private static boolean INFINITE = true;
 
     private CountDownLatch gate = new CountDownLatch(16);
 
@@ -32,5 +31,9 @@ public class GameServer {
         } catch (IOException e) {
             log4j.WARN(e.getMessage());
         }
+    }
+
+    public void exit() {
+        INFINITE = false;
     }
 }
