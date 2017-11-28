@@ -5,7 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -29,7 +34,7 @@ class GameServerTest {
     @AfterEach
     void after() {
         gameServer.exit();
-        executorService.shutdownNow();
+        executorService.shutdown();
     }
 
     @Test
@@ -51,6 +56,42 @@ class GameServerTest {
     @Test
     void shouldGenerateUniqueIdForEveryPlayer() {
         assertTrue(null);
+    }
+
+    @Test
+    void shouldTestSingleCallable() throws Exception {
+        int value = 123;
+        Callable<Integer> task = () -> {
+            Thread.sleep(1000);
+            return value;
+        };
+
+        ExecutorService executorService = newFixedThreadPool(1);
+        Future<Integer> future = executorService.submit(task);
+        Integer result = future.get(); // blocks
+
+        assertTrue(result.equals(value));
+    }
+
+    @Test
+    void shouldTestMultipleCallable() throws Exception {
+        int N_THREADS = 16;
+
+        Callable<Integer> task = () -> {
+            Integer sleep = new Random().nextInt(9000) + 1000;
+            Thread.sleep(sleep);
+            return sleep;
+        };
+
+        List<Callable<Integer>> tasks = new ArrayList<>();
+        for (int i = 0; i < N_THREADS; i++) {
+            tasks.add(task);
+        }
+
+        ExecutorService executorService = newFixedThreadPool(N_THREADS);
+        List<Future<Integer>> futures = executorService.invokeAll(tasks);
+
+        // ...
     }
 
     private static void connect16Players() {

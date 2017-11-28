@@ -26,7 +26,7 @@ public class GameServer implements Runnable {
                 newPlayer(player);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log4T.WARN(e.getMessage());
         }
     }
 
