@@ -12,10 +12,11 @@ import java.util.concurrent.ExecutorService;
 
 import static java.time.LocalDateTime.now;
 import static java.util.concurrent.Executors.newFixedThreadPool;
+import static pl.tmaj.common.Log4t.getInstanceFor;
 
 class PlayerHandler {
 
-    private final Log4t log4T = new Log4t(this.getClass().getSimpleName());
+    private final Log4t log4T = getInstanceFor(this);
 
     private final Socket player;
     private final CountDownLatch gate;

@@ -15,17 +15,21 @@ class GameServerTest {
 
     private static final String HOST = "localhost";
     private static final int DEFAULT_PORT = 9191;
-    private ThreadLocal<ExecutorService> executorService = new ThreadLocal<>();
+
+    private ExecutorService executorService;
+    private GameServer gameServer;
 
     @BeforeEach
     void before() {
-        executorService.set(newFixedThreadPool(1));
-        executorService.get().submit(() -> new GameServer());
+        executorService = newFixedThreadPool(1);
+        gameServer = new GameServer();
+        executorService.submit(gameServer);
     }
 
     @AfterEach
     void after() {
-        executorService.get().shutdownNow();
+        gameServer.exit();
+        executorService.shutdownNow();
     }
 
     @Test

@@ -8,27 +8,19 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newCachedThreadPool;
+import static pl.tmaj.common.Log4t.getInstanceFor;
 
-public class GameServer {
+public class GameServer implements Runnable {
 
-    private final Log4t log4T = new Log4t(this.getClass().getSimpleName());
+    public static final int DEFAULT_PORT = 9191;
 
-    private static final int DEFAULT_PORT = 9191;
-    private static final ExecutorService threadPool = newCachedThreadPool();
-    private static boolean IS_LISTENING = true;
-    private static final CountDownLatch gate = new CountDownLatch(15);
+    private final Log4t log4T = getInstanceFor(this);
+    private final ExecutorService threadPool = newCachedThreadPool();
+    private boolean IS_LISTENING = true;
+    private final CountDownLatch gameTrigger = new CountDownLatch(15);
 
-    private GameServer(int port) {
-        threadPool.submit(this::gateKeeper);
-        listenOn(port);
-    }
-
-    public GameServer() {
-        this(DEFAULT_PORT);
-    }
-
-    private void listenOn(int port) {
-        try (ServerSocket listener = new ServerSocket(port)) {
+    private void listen() {
+        try (ServerSocket listener = new ServerSocket(DEFAULT_PORT)) {
             while (IS_LISTENING) {
                 final Socket player = listener.accept();
                 newPlayer(player);
@@ -39,20 +31,26 @@ public class GameServer {
     }
 
     private void newPlayer(Socket player) {
-//        threadPool.submit(() -> new PlayerHandler(player, gate));
-        gate.countDown();
+        gameTrigger.countDown();
     }
 
-    private void gateKeeper() {
+    private void awaitPlayers() {
         try {
-            gate.await();
+            gameTrigger.await();
             exit();
         } catch (Exception e) {
-            e.printStackTrace();
+            log4T.WARN(e.getMessage());
         }
     }
 
     public void exit() {
         IS_LISTENING = false;
+        threadPool.shutdown();
+    }
+
+    @Override
+    public void run() {
+        threadPool.submit(this::awaitPlayers);
+        listen();
     }
 }
