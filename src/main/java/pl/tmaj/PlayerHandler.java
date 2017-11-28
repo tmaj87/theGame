@@ -1,6 +1,6 @@
 package pl.tmaj;
 
-import pl.tmaj.common.Logable;
+import pl.tmaj.common.Log4t;
 import pl.tmaj.common.SHA256;
 
 import java.io.IOException;
@@ -8,19 +8,23 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 
 import static java.time.LocalDateTime.now;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 
-class PlayerHandler extends Logable {
+class PlayerHandler {
+
+    private final Log4t log4T = new Log4t(this.getClass().getSimpleName());
 
     private final Socket player;
     private final CountDownLatch gate;
     private final String userId;
+    private final ExecutorService workers = newFixedThreadPool(2);
 
     private ObjectOutputStream output;
     private ObjectInputStream input;
+    private boolean isConnected;
 
     PlayerHandler(Socket player, CountDownLatch gate) {
         this.player = player;
@@ -34,25 +38,38 @@ class PlayerHandler extends Logable {
             output = new ObjectOutputStream(player.getOutputStream());
             input = new ObjectInputStream(player.getInputStream());
         } catch (IOException e) {
-            log4j.WARN(e.getMessage());
+            log4T.WARN(e.getMessage());
         }
         handleIO();
-        log4j.INFO(userId + " connected");
+        log4T.INFO(userId + " connected");
     }
 
     private void handleIO() {
-        Executor pool = newFixedThreadPool(2);
-        pool.execute(this::handleRead);
-        pool.execute(this::handleWrite);
+        workers.submit(this::handleRead);
+        workers.submit(this::handleWrite);
     }
 
-    private void handleRead() {}
+    private void handleRead() {
+        String string;
+        try {
+            while ((string = (String) input.readObject()) != null) {
+                log4T.INFO(userId + " wrote " + string);
+            }
+        } catch (Exception e) {
+            log4T.WARN(e.getMessage());
+            closeConnection();
+        }
+    }
 
     private void handleWrite() {
         try {
             gate.await();
         } catch (Exception e) {
-            e.printStackTrace();
+            log4T.WARN(e.getMessage());
         }
+    }
+
+    private boolean closeConnection() {
+        return isConnected = false;
     }
 }

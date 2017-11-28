@@ -1,8 +1,7 @@
 package pl.tmaj;
 
-import pl.tmaj.common.Logable;
+import pl.tmaj.common.Log4t;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.CountDownLatch;
@@ -10,30 +9,50 @@ import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newCachedThreadPool;
 
-public class GameServer extends Logable {
+public class GameServer {
 
-    private static final int PORT = 9191;
-    private static final ExecutorService pool = newCachedThreadPool();
-    private static boolean INFINITE = true;
+    private final Log4t log4T = new Log4t(this.getClass().getSimpleName());
 
-    private CountDownLatch gate = new CountDownLatch(16);
+    private static final int DEFAULT_PORT = 9191;
+    private static final ExecutorService threadPool = newCachedThreadPool();
+    private static boolean IS_LISTENING = true;
+    private static final CountDownLatch gate = new CountDownLatch(15);
+
+    private GameServer(int port) {
+        threadPool.submit(this::gateKeeper);
+        listenOn(port);
+    }
 
     public GameServer() {
-        listenOn(PORT);
+        this(DEFAULT_PORT);
     }
 
     private void listenOn(int port) {
         try (ServerSocket listener = new ServerSocket(port)) {
-            while (INFINITE) {
-                final Socket client = listener.accept();
-                pool.execute(() -> new PlayerHandler(client, gate));
+            while (IS_LISTENING) {
+                final Socket player = listener.accept();
+                newPlayer(player);
             }
-        } catch (IOException e) {
-            log4j.WARN(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void newPlayer(Socket player) {
+//        threadPool.submit(() -> new PlayerHandler(player, gate));
+        gate.countDown();
+    }
+
+    private void gateKeeper() {
+        try {
+            gate.await();
+            exit();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     public void exit() {
-        INFINITE = false;
+        IS_LISTENING = false;
     }
 }

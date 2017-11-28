@@ -4,14 +4,14 @@ import java.util.logging.Logger;
 
 import static java.util.logging.Level.INFO;
 import static java.util.logging.Level.WARNING;
+import static java.util.logging.Logger.getLogger;
 
-public class Log4j {
+public class Log4t {
 
     private final Logger logger;
 
-    public Log4j(Object clazz) {
-        String name = clazz.getClass().getSimpleName();
-        this.logger = Logger.getLogger(name);
+    public Log4t(String name) {
+        this.logger = getLogger(name, name);
     }
 
     public void WARN(String string) {
