@@ -4,10 +4,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -74,24 +74,25 @@ class GameServerTest {
     }
 
     @Test
-    void shouldTestMultipleCallable() throws Exception {
+    public void shouldHandleConnectionsAsThreads() throws Exception {
         int N_THREADS = 16;
+        int PORT = 8081;
 
-        Callable<Integer> task = () -> {
-            Integer sleep = new Random().nextInt(9000) + 1000;
-            Thread.sleep(sleep);
-            return sleep;
-        };
-
-        List<Callable<Integer>> tasks = new ArrayList<>();
+        runClientSimulatorOnPort(PORT);
+        ServerSocket serverSocket = new ServerSocket(PORT);
+        List<Callable<Socket>> listeners = new ArrayList<>();
         for (int i = 0; i < N_THREADS; i++) {
-            tasks.add(task);
+            listeners.add(new PlayerHandler(serverSocket));
         }
 
         ExecutorService executorService = newFixedThreadPool(N_THREADS);
-        List<Future<Integer>> futures = executorService.invokeAll(tasks);
-
-        // ...
+        List<Future<Socket>> futures = executorService.invokeAll(listeners);
+        for (Future<Socket> future : futures) {
+            Socket socket = future.get();
+            // ...
+            socket.close();
+        }
+        serverSocket.close();
     }
 
     private static void connect16Players() {
@@ -111,5 +112,14 @@ class GameServerTest {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private void runClientSimulatorOnPort(int port) {
+        ExecutorService executorService = newFixedThreadPool(1);
+        executorService.submit(() -> {
+            while (true) {
+                new Socket("localhost", port);
+            }
+        });
     }
 }
