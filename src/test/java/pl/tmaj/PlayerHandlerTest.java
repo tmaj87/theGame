@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class PlayerHandlerTest {
 
     @Test
-    void shouldHandlePlayer() {
+    void shouldReturnSocket() {
         assertTrue(null);
     }
 }

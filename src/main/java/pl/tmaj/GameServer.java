@@ -18,7 +18,7 @@ public class GameServer implements Runnable {
     private ServerSocket serverSocket;
     private final ExecutorService threadPool = newCachedThreadPool();
 
-    private List<Callable<Socket>> spawnThreads() throws Exception {
+    private List<Callable<Socket>> threads() throws Exception {
         serverSocket = new ServerSocket(DEFAULT_PORT);
         List<Callable<Socket>> listeners = new ArrayList<>();
         for (int i = 0; i < N_PLAYERS; i++) {
@@ -30,7 +30,7 @@ public class GameServer implements Runnable {
     @Override
     public void run() {
         try {
-            waitForAllPlayers(threadPool.invokeAll(spawnThreads()));
+            waitForAllPlayers(threadPool.invokeAll(threads()));
             serverSocket.close();
         } catch (Exception e) {
             e.printStackTrace();
