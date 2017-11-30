@@ -12,31 +12,31 @@ import static java.util.concurrent.Executors.newCachedThreadPool;
 
 public class GameServer implements Runnable {
 
-    public static final int DEFAULT_PORT = 9191; // config server
-    public static final int N_PLAYERS = 16; // config server
-
-    private ServerSocket serverSocket;
-    private final ExecutorService threadPool = newCachedThreadPool();
-
-    private List<Callable<Socket>> threads() throws Exception {
-        serverSocket = new ServerSocket(DEFAULT_PORT);
-        List<Callable<Socket>> listeners = new ArrayList<>();
-        for (int i = 0; i < N_PLAYERS; i++) {
-            listeners.add(new PlayerHandler(serverSocket));
-        }
-        return listeners;
-    }
+    private static final int DEFAULT_PORT = 9191; // config server
+    private static final int N_PLAYERS = 16; // config server
 
     @Override
     public void run() {
+        ServerSocket serverSocket;
+        ExecutorService threadPool = newCachedThreadPool();
         try {
-            waitForAllPlayers(threadPool.invokeAll(threads()));
+            serverSocket = new ServerSocket(DEFAULT_PORT);
+            List<Callable<Socket>> listeners = listenOn(serverSocket);
+            waitForAllPlayers(threadPool.invokeAll(listeners));
             serverSocket.close();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             threadPool.shutdown();
         }
+    }
+
+    private List<Callable<Socket>> listenOn(ServerSocket serverSocket) throws Exception {
+        List<Callable<Socket>> listeners = new ArrayList<>();
+        for (int i = 0; i < N_PLAYERS; i++) {
+            listeners.add(new PlayerHandler(serverSocket));
+        }
+        return listeners;
     }
 
     private void waitForAllPlayers(List<Future<Socket>> futures) throws Exception {

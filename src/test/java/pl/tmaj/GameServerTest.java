@@ -4,47 +4,52 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static pl.tmaj.common.TestUtils.isGamePortOpen;
 
 class GameServerTest {
 
-    private static final String HOST = "localhost";
     private static final int DEFAULT_PORT = 9191;
+    private static final int OTHER_PORT = 7281;
+    private static final int MAX_PLAYERS = 16;
 
-    private ExecutorService executorService;
-    private GameServer gameServer;
+    private ExecutorService gameSimulation;
 
     @BeforeEach
-    void before() {
-        executorService = newFixedThreadPool(1);
-        gameServer = new GameServer();
-        executorService.submit(gameServer);
+    void beforeEach() {
+        gameSimulation = newFixedThreadPool(1);
+        gameSimulation.submit(new GameServer());
     }
 
     @AfterEach
-    void after() {
-        executorService.shutdown();
+    void afterEach() {
+        gameSimulation.shutdownNow();
     }
 
     @Test
     void shouldListenOnDefaultPort() {
-        assertTrue(isGamePortOpen());
+        assertTrue(isGamePortOpen(DEFAULT_PORT));
     }
 
     @Test
     void shouldNotListenOnOtherPort() {
-        assertFalse(isGamePortOpen(8181));
+        assertFalse(isGamePortOpen(OTHER_PORT));
     }
 
     @Test
     void shouldStopListeningAfter16ThPlayer() {
-        connect16Players();
-        assertFalse(isGamePortOpen());
+        connectPlayers(MAX_PLAYERS);
+        assertFalse(isGamePortOpen(DEFAULT_PORT));
+    }
+
+    @Test
+    void shouldBeListeningBefore16ThPlayer() {
+        connectPlayers(MAX_PLAYERS - 1);
+        assertTrue(isGamePortOpen(DEFAULT_PORT));
     }
 
     @Test
@@ -52,22 +57,10 @@ class GameServerTest {
         assertTrue(null);
     }
 
-    private static void connect16Players() {
-        for (int i = 0; i < 16; i++) {
-            isGamePortOpen();
+    private static void connectPlayers(int number) {
+        for (int i = 0; i < number; i++) {
+            isGamePortOpen(DEFAULT_PORT);
         }
     }
 
-    private static boolean isGamePortOpen() {
-        return isGamePortOpen(DEFAULT_PORT);
-    }
-
-    private static boolean isGamePortOpen(int port) {
-        try (Socket socket = new Socket(HOST, port)) {
-            socket.close();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
 }
