@@ -8,7 +8,7 @@ class PlayerHandler implements Callable<Socket> {
 
     private final ServerSocket serverSocket;
 
-    public PlayerHandler(ServerSocket serverSocket) {
+    PlayerHandler(ServerSocket serverSocket) {
         this.serverSocket = serverSocket;
     }
 

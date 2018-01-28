@@ -9,7 +9,7 @@ import java.util.concurrent.ExecutorService;
 import static java.util.concurrent.Executors.newFixedThreadPool;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static pl.tmaj.common.TestUtils.isGamePortOpen;
+import static pl.tmaj.common.TestUtils.connectToPort;
 
 class GameServerTest {
 
@@ -32,34 +32,36 @@ class GameServerTest {
 
     @Test
     void shouldListenOnDefaultPort() {
-        assertTrue(isGamePortOpen(DEFAULT_PORT));
+        assertTrue(connectToPort(DEFAULT_PORT));
     }
 
     @Test
     void shouldNotListenOnOtherPort() {
-        assertFalse(isGamePortOpen(OTHER_PORT));
+        assertFalse(connectToPort(OTHER_PORT));
     }
 
     @Test
     void shouldStopListeningAfter16ThPlayer() {
         connectPlayers(MAX_PLAYERS);
-        assertFalse(isGamePortOpen(DEFAULT_PORT));
+        assertFalse(connectToPort(DEFAULT_PORT));
     }
 
     @Test
     void shouldBeListeningBefore16ThPlayer() {
         connectPlayers(MAX_PLAYERS - 1);
-        assertTrue(isGamePortOpen(DEFAULT_PORT));
+        assertTrue(connectToPort(DEFAULT_PORT));
     }
 
     @Test
     void shouldGenerateUniqueIdForEveryPlayer() {
-        assertTrue(null);
+        String player1 = "";
+        String player2 = "";
+        assertFalse(player1.equals(player2));
     }
 
     private static void connectPlayers(int number) {
         for (int i = 0; i < number; i++) {
-            isGamePortOpen(DEFAULT_PORT);
+            connectToPort(DEFAULT_PORT);
         }
     }
 

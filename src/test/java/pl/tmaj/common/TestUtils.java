@@ -4,7 +4,7 @@ import java.net.Socket;
 
 public class TestUtils {
 
-    public static boolean isGamePortOpen(int port) {
+    public static boolean connectToPort(int port) {
         try (Socket socket = new Socket("localhost", port)) {
             socket.close();
             return true;
