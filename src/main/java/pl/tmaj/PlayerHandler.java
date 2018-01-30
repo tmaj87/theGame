@@ -1,19 +1,23 @@
 package pl.tmaj;
 
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
-class PlayerHandler implements Callable<Socket> {
+public class PlayerHandler implements Callable<Socket> {
 
-    private final ServerSocket serverSocket;
+    private final Socket socket;
+    private final String id = "PlayerX";
 
-    PlayerHandler(ServerSocket serverSocket) {
-        this.serverSocket = serverSocket;
+    public PlayerHandler(Socket socket) {
+        this.socket = socket;
     }
 
     @Override
     public Socket call() throws Exception {
-        return serverSocket.accept();
+        return socket;
+    }
+
+    public String getId() {
+        return id;
     }
 }

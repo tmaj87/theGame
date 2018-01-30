@@ -4,12 +4,15 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newFixedThreadPool;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static pl.tmaj.common.TestUtils.connectToPort;
+import static pl.tmaj.common.TestUtils.getSocket;
 
 class GameServerTest {
 
@@ -18,15 +21,18 @@ class GameServerTest {
     private static final int MAX_PLAYERS = 16;
 
     private ExecutorService gameSimulation;
+    private GameServer gameServer;
 
     @BeforeEach
     void beforeEach() {
         gameSimulation = newFixedThreadPool(1);
-        gameSimulation.submit(new GameServer());
+        gameServer = new GameServer();
+        gameSimulation.submit(gameServer);
     }
 
     @AfterEach
-    void afterEach() {
+    void afterEach() throws IOException {
+        gameServer.stop();
         gameSimulation.shutdownNow();
     }
 
@@ -37,13 +43,13 @@ class GameServerTest {
 
     @Test
     void shouldNotListenOnOtherPort() {
-        assertFalse(connectToPort(OTHER_PORT));
+        assertEquals(false, connectToPort(OTHER_PORT));
     }
 
     @Test
     void shouldStopListeningAfter16ThPlayer() {
         connectPlayers(MAX_PLAYERS);
-        assertFalse(connectToPort(DEFAULT_PORT));
+        assertEquals(false, connectToPort(DEFAULT_PORT));
     }
 
     @Test
@@ -53,10 +59,20 @@ class GameServerTest {
     }
 
     @Test
-    void shouldGenerateUniqueIdForEveryPlayer() {
-        String player1 = "";
-        String player2 = "";
-        assertFalse(player1.equals(player2));
+    void shouldReturnPlayerId() throws Exception {
+        String playerId = connectPlayer();
+        connectPlayers(MAX_PLAYERS - 1);
+        assertEquals("PlayerX", playerId);
+    }
+
+    private static String connectPlayer() throws Exception {
+        Socket socket = getSocket(DEFAULT_PORT);
+        ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream()); // exception here
+        String string;
+        while ((string = (String) inStream.readObject()) != null) {
+            return string;
+        }
+        return null;
     }
 
     private static void connectPlayers(int number) {
