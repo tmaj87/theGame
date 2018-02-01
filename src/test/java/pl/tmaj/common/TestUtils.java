@@ -8,13 +8,18 @@ import static pl.tmaj.common.TestConstants.LOCALHOST;
 public class TestUtils {
 
     public static Socket getSocket(int port) {
-        Socket socket = null;
+        Socket socket;
         try {
             socket = new Socket(LOCALHOST, port);
         } catch (Exception e) {
             e.printStackTrace();
+            socket = null;
         }
         return socket;
+    }
+
+    public static boolean connectToDefaultPort() {
+        return getSocket(DEFAULT_PORT) != null;
     }
 
     public static boolean connectToPort(int port) {
@@ -23,7 +28,7 @@ public class TestUtils {
 
     public static void mockConnections(int number) {
         for (int i = 0; i < number; i++) {
-            connectToPort(DEFAULT_PORT);
+            connectToDefaultPort();
         }
     }
 
