@@ -1,23 +1,27 @@
 package pl.tmaj;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
-public class PlayerHandler implements Callable<Socket> {
+class PlayerHandler implements Callable<Socket> {
 
     private final Socket socket;
     private final String id = "PlayerX";
 
-    public PlayerHandler(Socket socket) {
+    PlayerHandler(Socket socket) {
         this.socket = socket;
     }
 
     @Override
-    public Socket call() throws Exception {
+    public Socket call() throws IOException {
+        sendId();
         return socket;
     }
 
-    public String getId() {
-        return id;
+    private void sendId() throws IOException {
+        PrintWriter toSocket = new PrintWriter(socket.getOutputStream(), true);
+        toSocket.write("PlayerX");
     }
 }

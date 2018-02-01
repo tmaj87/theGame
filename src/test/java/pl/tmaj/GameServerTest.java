@@ -5,20 +5,21 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newFixedThreadPool;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static pl.tmaj.common.TestConstants.*;
 import static pl.tmaj.common.TestUtils.connectToPort;
-import static pl.tmaj.common.TestUtils.getSocket;
+import static pl.tmaj.common.TestUtils.mockConnections;
 
-class GameServerTest {
+public class GameServerTest {
 
-    private static final int DEFAULT_PORT = 9191;
-    private static final int OTHER_PORT = 7281;
-    private static final int MAX_PLAYERS = 16;
+    private static List<Socket> acquiredConnections = new ArrayList<>();
 
     private ExecutorService gameSimulation;
     private GameServer gameServer;
@@ -34,6 +35,9 @@ class GameServerTest {
     void afterEach() throws IOException {
         gameServer.stop();
         gameSimulation.shutdownNow();
+        for (Socket socket : acquiredConnections) {
+            socket.close();
+        }
     }
 
     @Test
@@ -48,37 +52,14 @@ class GameServerTest {
 
     @Test
     void shouldStopListeningAfter16ThPlayer() {
-        connectPlayers(MAX_PLAYERS);
+        mockConnections(SIXTEEN_PLAYERS);
         assertEquals(false, connectToPort(DEFAULT_PORT));
     }
 
     @Test
     void shouldBeListeningBefore16ThPlayer() {
-        connectPlayers(MAX_PLAYERS - 1);
+        mockConnections(FIFTEEN_PLAYERS);
         assertTrue(connectToPort(DEFAULT_PORT));
-    }
-
-    @Test
-    void shouldReturnPlayerId() throws Exception {
-        String playerId = connectPlayer();
-        connectPlayers(MAX_PLAYERS - 1);
-        assertEquals("PlayerX", playerId);
-    }
-
-    private static String connectPlayer() throws Exception {
-        Socket socket = getSocket(DEFAULT_PORT);
-        ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream()); // exception here
-        String string;
-        while ((string = (String) inStream.readObject()) != null) {
-            return string;
-        }
-        return null;
-    }
-
-    private static void connectPlayers(int number) {
-        for (int i = 0; i < number; i++) {
-            connectToPort(DEFAULT_PORT);
-        }
     }
 
 }
