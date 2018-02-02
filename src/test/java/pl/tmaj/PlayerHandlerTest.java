@@ -5,10 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static pl.tmaj.common.TestConstants.DEFAULT_PORT;
-import static pl.tmaj.common.TestConstants.PLAYER_ID;
+import static pl.tmaj.common.TestConstants.*;
 import static pl.tmaj.common.TestUtils.getSocket;
 
 public class PlayerHandlerTest {
@@ -27,8 +29,22 @@ public class PlayerHandlerTest {
 
     @Test
     void shouldReturnPlayerId() {
-        String playerId = new PlayerHandler(getSocket(DEFAULT_PORT)).getId();
+        String playerId = getNewPlayerId();
         assertTrue(PLAYER_ID.equals(playerId));
+    }
+
+    @Test
+    void shouldReturnDifferentIdForEveryPlayer() {
+        Set<String> playerIds = new HashSet<>();
+        for (int i = 0; i < SIXTEEN_PLAYERS; i++) {
+            playerIds.add(getNewPlayerId());
+        }
+
+        assertEquals(playerIds.size(), SIXTEEN_PLAYERS);
+    }
+
+    private String getNewPlayerId() {
+        return new PlayerHandler(getSocket(DEFAULT_PORT)).getId();
     }
 
 }
