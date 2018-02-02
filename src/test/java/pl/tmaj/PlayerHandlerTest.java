@@ -5,13 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.net.Socket;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static pl.tmaj.common.TestConstants.*;
+import static pl.tmaj.common.TestConstants.DEFAULT_PORT;
+import static pl.tmaj.common.TestConstants.PLAYER_ID;
 import static pl.tmaj.common.TestUtils.getSocket;
-import static pl.tmaj.common.TestUtils.mockConnections;
 
 public class PlayerHandlerTest {
 
@@ -28,24 +26,9 @@ public class PlayerHandlerTest {
     }
 
     @Test
-    void shouldReturnPlayerId() throws Exception {
-        mockConnections(FIFTEEN_PLAYERS);
-        String playerId = getPlayerId();
+    void shouldReturnPlayerId() {
+        String playerId = new PlayerHandler(getSocket(DEFAULT_PORT)).getId();
         assertTrue(PLAYER_ID.equals(playerId));
-    }
-
-    private String getPlayerId() throws Exception {
-        Socket socket = getSocket(DEFAULT_PORT);
-        return getMessageFromSocket(socket);
-    }
-
-    private String getMessageFromSocket(Socket socket) throws IOException, ClassNotFoundException {
-        ObjectInputStream inStream = new ObjectInputStream(socket.getInputStream());
-        String string;
-        while ((string = (String) inStream.readObject()) != null) {
-            return string;
-        }
-        return null;
     }
 
 }
