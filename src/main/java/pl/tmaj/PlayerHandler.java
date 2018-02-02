@@ -3,12 +3,14 @@ package pl.tmaj;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
-class PlayerHandler implements Callable<Socket> {
+import static java.util.UUID.randomUUID;
+
+public class PlayerHandler implements Callable<Socket> {
 
     private final Socket socket;
-    private final String id = "PlayerX";
+    private final String id = randomUUID().toString();
 
-    PlayerHandler(Socket socket) {
+    public PlayerHandler(Socket socket) {
         this.socket = socket;
     }
 

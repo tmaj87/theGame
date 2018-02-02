@@ -38,12 +38,14 @@ public class GameServerTest {
     @Test
     void shouldStopListeningAfter16ThPlayer() {
         mockConnections(SIXTEEN_PLAYERS);
+
         assertFalse(connectToDefaultPort());
     }
 
     @Test
     void shouldBeListeningBefore16ThPlayer() {
         mockConnections(FIFTEEN_PLAYERS);
+
         assertTrue(connectToDefaultPort());
     }
 
