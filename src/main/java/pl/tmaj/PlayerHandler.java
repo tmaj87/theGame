@@ -1,14 +1,19 @@
 package pl.tmaj;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
-import static java.util.UUID.randomUUID;
-
+@Entity
 public class PlayerHandler implements Callable<Socket> {
 
     private final Socket socket;
-    private final String id = randomUUID().toString();
+
+    @Id
+    @GeneratedValue
+    private String id;
 
     public PlayerHandler(Socket socket) {
         this.socket = socket;
