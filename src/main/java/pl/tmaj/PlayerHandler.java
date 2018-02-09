@@ -1,19 +1,16 @@
 package pl.tmaj;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
-@Entity
-public class PlayerHandler implements Callable<Socket> {
-
-    private final Socket socket;
+public class PlayerHandler extends Logged implements Callable<Socket> {
 
     @Id
     @GeneratedValue
     private String id;
+    private final Socket socket;
 
     public PlayerHandler(Socket socket) {
         this.socket = socket;
