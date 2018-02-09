@@ -1,63 +1,62 @@
 package pl.tmaj;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
-import org.springframework.stereotype.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Random;
 import java.util.concurrent.ExecutorService;
 
-import static java.util.concurrent.Executors.newCachedThreadPool;
+import static java.util.concurrent.Executors.newFixedThreadPool;
 
-@Component
-public class GameServer implements Runnable {
+@SpringBootApplication
+public class GameServer {
+
+    private static final Logger log = LoggerFactory.getLogger(GameServer.class);
 
     private static final int DEFAULT_PORT = 9191; // config server
     private static final int N_PLAYERS = 16; // config server
 
     private ServerSocket serverSocket;
-    private ExecutorService threadPool = newCachedThreadPool();
+    private ExecutorService threadPool = newFixedThreadPool(N_PLAYERS);
+    private Scoreboard scoreboard;
 
-    @Override
-    public void run() {
-        try {
-            serverSocket = new ServerSocket(DEFAULT_PORT);
-            for (int i = 0; i < N_PLAYERS; i++) {
-                Socket player = serverSocket.accept();
-                threadPool.submit(new PlayerHandler(player));
-            }
-            stop();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // finally
+    public static void main(String[] args) {
+        SpringApplication.run(GameServer.class, args);
     }
 
-    public void stop() throws IOException {
+    @Bean
+    public CommandLineRunner startServer(Scoreboard scoreboard) {
+        return (args) -> {
+            try {
+                log.info("Program \\Praca \\Dyplomowa uruchomiony.");
+                serverSocket = new ServerSocket(DEFAULT_PORT);
+                for (int i = 0; i < N_PLAYERS; i++) {
+                    Socket player = serverSocket.accept();
+                    threadPool.submit(new PlayerHandler(player));
+                }
+                pickWinner(scoreboard);
+                stop();
+            } catch (Exception e) {
+                log.error(e.getMessage());
+            }
+            // finally
+        };
+    }
+
+    private synchronized void pickWinner(Scoreboard scoreboard) {
+        String randomPlayer = String.valueOf(new Random().nextInt(N_PLAYERS));
+        scoreboard.save(new Winner(randomPlayer));
+    }
+
+    private void stop() throws IOException {
         serverSocket.close();
         threadPool.shutdownNow();
-    }
-}
-
-@RepositoryRestResource
-interface Scoreboard extends JpaRepository<Winner, Long> {}
-
-@Entity
-class Winner {
-
-    @Id
-    @GeneratedValue
-    private Long id;
-    private String name;
-
-    protected Winner() {}
-
-    public Winner(String name) {
-        this.name = name;
     }
 }
