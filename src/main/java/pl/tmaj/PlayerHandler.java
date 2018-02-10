@@ -1,15 +1,13 @@
 package pl.tmaj;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import java.net.Socket;
 import java.util.concurrent.Callable;
 
-public class PlayerHandler extends Logged implements Callable<Socket> {
+import static java.util.UUID.randomUUID;
 
-    @Id
-    @GeneratedValue
-    private String id;
+public class PlayerHandler implements Callable<Socket> {
+
+    private final String id = randomUUID().toString();
     private final Socket socket;
 
     public PlayerHandler(Socket socket) {

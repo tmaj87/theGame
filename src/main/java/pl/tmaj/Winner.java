@@ -18,4 +18,20 @@ public class Winner {
     public Winner(String name) {
         this.name = name;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Winner{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
