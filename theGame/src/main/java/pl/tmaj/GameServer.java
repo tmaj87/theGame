@@ -18,10 +18,10 @@ public class GameServer {
     private Logger log = getLogger(this.getClass());
     private ExecutorService threadPool = Executors.newFixedThreadPool(N_PLAYERS);
     private ServerSocket serverSocket;
-    private Scoreboard scoreboard;
+    private WinnersRepository winnersRepository;
 
-    public GameServer(Scoreboard scoreboard) {
-        this.scoreboard = scoreboard;
+    public GameServer(WinnersRepository winnersRepository) {
+        this.winnersRepository = winnersRepository;
         log.info("Program 'Praca Dyplomow' uruchomiony");
         init();
     }
@@ -47,7 +47,7 @@ public class GameServer {
 
     private synchronized void pickWinner() {
         Integer randomPlayer = new Random().nextInt(N_PLAYERS);
-        scoreboard.save(new Winner(randomPlayer.toString()));
+        winnersRepository.save(new Winner(randomPlayer.toString()));
     }
 
     private void stop() {

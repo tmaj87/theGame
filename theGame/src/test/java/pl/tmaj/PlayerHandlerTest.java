@@ -18,6 +18,8 @@ import static pl.tmaj.common.TestUtils.getSetOfSixteenPlayers;
 @SpringBootTest
 public class PlayerHandlerTest {
 
+    // new PlayerHandler( [socket mock] )
+
     @Test
     public void shouldReturnPlayerId() {
         String playerId = getNewPlayerId();
