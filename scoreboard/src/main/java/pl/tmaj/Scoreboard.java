@@ -3,6 +3,8 @@ package pl.tmaj;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import pl.tmaj.common.Winner;
+import pl.tmaj.common.WinnersRepository;
 
 import java.util.Collection;
 

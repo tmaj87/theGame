@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 
 import static java.util.UUID.randomUUID;
 
+//@RestResource
 public class PlayerHandler implements Callable<Socket> {
 
     private final String id = randomUUID().toString();

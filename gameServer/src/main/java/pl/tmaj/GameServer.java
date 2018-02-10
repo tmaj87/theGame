@@ -1,6 +1,9 @@
 package pl.tmaj;
 
 import org.slf4j.Logger;
+import org.springframework.stereotype.Component;
+import pl.tmaj.common.Winner;
+import pl.tmaj.common.WinnersRepository;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -13,6 +16,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import static pl.tmaj.ConfigServer.DEFAULT_PORT;
 import static pl.tmaj.ConfigServer.N_PLAYERS;
 
+@Component
 public class GameServer {
 
     private Logger log = getLogger(this.getClass());
