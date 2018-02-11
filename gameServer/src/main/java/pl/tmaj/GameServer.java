@@ -27,7 +27,7 @@ public class GameServer {
     public GameServer(WinnersRepository winnersRepository) {
         this.winnersRepository = winnersRepository;
         log.info("Program 'Praca Dyplomow' uruchomiony");
-        init();
+        new Thread(this::init).start();
     }
 
     private void init() {
