@@ -1,13 +1,11 @@
 package pl.tmaj;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
+import java.util.stream.Stream;
 
 @SpringBootApplication
 public class WinnersRepositoryApplication {
@@ -17,20 +15,19 @@ public class WinnersRepositoryApplication {
     }
 }
 
-@RestController
-class WinnerRestController {
+@Component
+class DemoData implements CommandLineRunner {
+    private final WinnersRepository winnersRepository;
 
-    private WinnersRepository winnersRepository;
-
-    public WinnerRestController(WinnersRepository winnersRepository) {
+    public DemoData(WinnersRepository winnersRepository) {
         this.winnersRepository = winnersRepository;
     }
 
-    @RequestMapping("/")
-    public List<String> getAllWinners() {
-        return winnersRepository.findAll()
-                .stream()
-                .map(Winner::toString)
-                .collect(toList());
+    @Override
+    public void run(String... strings) throws Exception {
+        Stream.of("Josh", "Mark", "Elen", "Joe")
+                .forEach(name -> winnersRepository
+                        .save(new Winner(name))
+                );
     }
 }
