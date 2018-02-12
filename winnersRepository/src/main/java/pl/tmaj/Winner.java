@@ -1,4 +1,4 @@
-package pl.tmaj.common;
+package pl.tmaj;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
