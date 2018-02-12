@@ -1,25 +1,17 @@
 package pl.tmaj;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import pl.tmaj.common.Winner;
-import pl.tmaj.common.WinnersRepository;
-
-import java.util.Collection;
 
 @RestController
 public class Scoreboard {
 
-    private final WinnersRepository winnersRepository;
-
-    public Scoreboard(WinnersRepository winnersRepository) {
-        this.winnersRepository = winnersRepository;
-    }
-
-    @GetMapping("/")
+    @RequestMapping("/")
     @ResponseBody
-    public Collection<Winner> index() {
-        return this.winnersRepository.findAll();
+    public String index() {
+        // this service will request list from WinnersRepository
+        // and display it in html5-like way
+        return "winners list";
     }
 }
