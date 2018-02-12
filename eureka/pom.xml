@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>pl.tmaj</groupId>
-    <artifactId>praca-dyplomowa-java</artifactId>
+    <artifactId>praca-dyplomowa-java-eureka-server</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
