@@ -26,7 +26,7 @@ public class GameServerRestController {
     @RequestMapping("/")
     public String index() {
         String playerName = RandomString.ofLength(12, false);
-        winnerRepository.save("{\"name\": \"" + playerName + "\"}");
+        winnerRepository.save(new Winner(playerName));
         return "Welcome at GameServer, your name is " + playerName
                 + ", you are of " + maxPlayers + " players in game started on " + gamePort + " port";
     }
