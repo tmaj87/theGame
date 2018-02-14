@@ -1,54 +1,59 @@
 package pl.tmaj;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketHandler;
-import org.springframework.web.socket.WebSocketSession;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-import org.springframework.web.socket.handler.TextWebSocketHandler;
-
-import java.io.IOException;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
 @Configuration
-@EnableWebSocket
-public class WebClient implements WebSocketConfigurer {
+@EnableWebSocketMessageBroker
+class WebClient extends AbstractWebSocketMessageBrokerConfigurer {
 
     @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(register(), "/register");
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/feed");
+        config.setApplicationDestinationPrefixes("/client");
     }
 
-    @Bean
-    public WebSocketHandler register() {
-        return new ConnectionHandler();
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/register")
+                .setAllowedOrigins("*")
+                .withSockJS();
     }
 }
 
-class ConnectionHandler extends TextWebSocketHandler {
+class SimpleMessage {
 
-    static private Queue<WebSocketSession> sessions = new ConcurrentLinkedQueue<>();
-    private int maxPlayers = 3;
+    private String content;
 
-    @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message) {
-        // read message ??
+    public SimpleMessage() {
     }
 
-    @Override
-    public void afterConnectionEstablished(WebSocketSession webSocketSession) throws IOException {
-        sessions.add(webSocketSession);
-        webSocketSession.sendMessage(new TextMessage("pong"));
+    public SimpleMessage(String content) {
+        this.content = content;
+    }
 
-        if (sessions.size() >= maxPlayers) {
-            for (WebSocketSession session : sessions) {
-                session.sendMessage(new TextMessage("bye"));
-                session.close();
-            }
-        }
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String name) {
+        this.content = name;
+    }
+}
+
+@Controller
+class GreetingController {
+
+    @MessageMapping("/message")
+    @SendTo("/feed/info")
+    public SimpleMessage info(SimpleMessage message) throws Exception {
+        Thread.sleep(1000);
+        return new SimpleMessage("Hello, " + message.getContent() + "!");
     }
 }
