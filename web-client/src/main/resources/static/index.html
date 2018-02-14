@@ -14,14 +14,13 @@
     var socket = new SockJS('/register');
     var stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
-        console.log('Connected: ' + frame);
         stompClient.subscribe('/feed/info', function (data) {
-            console.log("new message: " + JSON.parse(data.body));
+            console.log(JSON.parse(data.body).content);
         });
     });
 
     function sendMessage() {
-        stompClient.send("/client/message", {}, JSON.stringify({'content': 'Adam'}));
+        stompClient.send("/client/message", {}, JSON.stringify({'content': 'Joshua'}));
     }
 </script>
 
