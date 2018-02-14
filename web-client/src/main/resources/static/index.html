@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebClient - web</title>
+</head>
+<body>
+
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
+<script type="text/javascript">
+    var socket = new SockJS('/register');
+    var stompClient = Stomp.over(socket);
+    stompClient.connect({}, function (frame) {
+        console.log('Connected: ' + frame);
+        stompClient.subscribe('/feed/info', function (data) {
+            console.log("new message: " + JSON.parse(data.body));
+        });
+    });
+
+    function sendMessage() {
+        stompClient.send("/client/message", {}, JSON.stringify({'content': 'Adam'}));
+    }
+</script>
+
+<button onclick="sendMessage()">Send message</button>
+
+</body>
+</html>
