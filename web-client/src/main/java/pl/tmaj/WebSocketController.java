@@ -15,11 +15,13 @@ public class WebSocketController {
 
     @MessageMapping("/message")
     public void setName(SimpleMessage message) throws Exception {
-        String name = message.getContent();
-        // associate name with id, in WinnerRepository
     }
 
-    public void info() throws Exception {
-        template.convertAndSend("/feed/info", "pong"); // "/feed/{userId}"
+    public void info(String message) throws Exception {
+        template.convertAndSend("/feed/info", message);
+    }
+
+    public void toPlayer(String message, String playerId) {
+        template.convertAndSend("/feed/{playerId}", message);
     }
 }

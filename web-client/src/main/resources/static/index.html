@@ -9,22 +9,10 @@
 <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
-
-<script type="text/javascript">
-    var socket = new SockJS('/register');
-    var stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-        stompClient.subscribe('/feed/info', function (data) {
-            console.log(data);
-        });
-    });
-
-    function sendMessage() {
-        stompClient.send("/client/message", {}, JSON.stringify({'content': 'Joshua'}));
-    }
-</script>
+<script src="script.js"></script>
 
 <button onclick="sendMessage()">Send message</button>
+<div class="message_box"></div>
 
 </body>
 </html>
