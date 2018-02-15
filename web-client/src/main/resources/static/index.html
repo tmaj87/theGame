@@ -15,7 +15,7 @@
     var stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         stompClient.subscribe('/feed/info', function (data) {
-            console.log(JSON.parse(data.body).content);
+            console.log(data);
         });
     });
 
