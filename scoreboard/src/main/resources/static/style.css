@@ -1,0 +1,12 @@
+html {
+    font-family: 'Mukta Mahee', sans-serif;
+}
+
+.container {
+    margin: 20px auto;
+    width: 400px;
+}
+
+.scoreboard {
+    list-style-type: decimal;
+}
