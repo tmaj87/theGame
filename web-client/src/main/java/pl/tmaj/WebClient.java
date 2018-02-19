@@ -13,7 +13,7 @@ public class WebClient extends AbstractWebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
         config.enableSimpleBroker("/feed");
-        config.setApplicationDestinationPrefixes("/client");
+        config.setApplicationDestinationPrefixes("/send");
     }
 
     @Override

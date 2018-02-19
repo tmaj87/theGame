@@ -1,11 +1,12 @@
 var socket = new SockJS('/register');
 var stompClient = Stomp.over(socket);
-stompClient.connect({}, function (frame) {
+stompClient.connect({}, function () {
     stompClient.subscribe('/feed/info', function (data) {
-        $('.message_box').append('<div>' + data.body + '</div>');
+        let content = JSON.parse(data.body).content;
+        $('.message_box').append('<div>' + content + '</div>');
     });
 });
 
 function sendMessage() {
-    stompClient.send("/client/message", {}, JSON.stringify({'content': 'Joshua'}));
+    stompClient.send("/send/message", {}, JSON.stringify($('#message').val()));
 }

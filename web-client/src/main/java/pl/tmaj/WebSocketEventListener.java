@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import pl.tmaj.common.HashIt;
+import pl.tmaj.common.SimpleMessage;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,6 +46,6 @@ public class WebSocketEventListener {
     }
 
     private void feedPlayerCount() {
-        template.convertAndSend("/feed/info", players.size() + " players in game");
+        template.convertAndSend("/feed/info", new SimpleMessage(players.size() + " players in game"));
     }
 }
