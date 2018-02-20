@@ -6,7 +6,7 @@ function obtainNewList() {
                 for (let index in data) {
                     scoreboard.append('<li>' + data[index] + '</li>')
                 }
-                setTimeout(obtainNewList, 5000);
+                setTimeout(obtainNewList, 3000);
             }
         );
 }
