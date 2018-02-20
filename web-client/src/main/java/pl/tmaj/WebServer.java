@@ -7,24 +7,22 @@ import pl.tmaj.common.SimpleMessage;
 import pl.tmaj.common.Winner;
 import pl.tmaj.common.WinnerRepository;
 
-import java.util.Iterator;
 import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.Stream;
 
 @Component
 public class WebServer {
 
-    private static final String DEFAULT_PLAYER_NAME = "";
     private Queue<String> players = new ConcurrentLinkedQueue<>();
+
     private int maxPlayers;
     private SimpMessagingTemplate template;
     private WinnerRepository repository;
 
 
     public WebServer(@Value("${max.players:2}") int maxPlayers, SimpMessagingTemplate template, WinnerRepository repository) {
-        this.maxPlayers = maxPlayers;
+        this.maxPlayers = 3;
         this.template = template;
         this.repository = repository;
     }
@@ -38,7 +36,8 @@ public class WebServer {
     private void initGame() {
         String playerId = pickRandomPlayer();
         repository.save(new Winner(playerId));
-        feedInfo(playerId + " won");
+        feedToInfo(playerId + " won");
+        feedToPlayer(playerId, "You win!");
         disconnectAllPlayers();
     }
 
@@ -49,32 +48,30 @@ public class WebServer {
     }
 
     private String getNthPlayer(int randomInt) {
-        for (Iterator<String> it = players.iterator().; it.hasNext(); ) {
-            String player = it.next();
-        }
-        for(int i = 0; i < randomInt; i++)
-            current = iterator.next();
-        Stream.of(players.iterator()).
-        return null;
+        return (String) players.toArray()[randomInt];
     }
 
     private void disconnectAllPlayers() {
-        feedInfo("Bye");
+        feedToInfo("bye");
         players.clear();
     }
 
     public void addUserAndNotify(String playerId) {
         players.add(playerId);
-        feedInfo(playerId + " joined");
+        feedToInfo(playerId + " joined");
         shouldInitGame();
     }
 
     public void removeUserAndNotify(String playerId) {
         players.remove(playerId);
-        feedInfo(playerId + " left");
+        feedToInfo(playerId + " left");
     }
 
-    private void feedInfo(String content) {
+    private void feedToInfo(String content) {
         template.convertAndSend("/feed/info", new SimpleMessage(content));
+    }
+
+    private void feedToPlayer(String playerId, String content) {
+        template.convertAndSend("/feed/" + playerId, new SimpleMessage(content));
     }
 }

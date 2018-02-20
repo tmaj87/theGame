@@ -17,14 +17,13 @@ public class WebSocketEventListener {
     @EventListener
     public void handleNewConnection(SessionConnectEvent event) {
         String playerId = getSimpSessionId(event);
-        server.addUser(playerId);
+        server.addUserAndNotify(playerId);
     }
-
 
     @EventListener
     public void handleDisconnect(SessionDisconnectEvent event) {
         String playerId = event.getSessionId();
-        server.removeUser(playerId);
+        server.removeUserAndNotify(playerId);
     }
 
     private String getSimpSessionId(SessionConnectEvent event) {
