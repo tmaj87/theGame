@@ -1,4 +1,4 @@
-package pl.tmaj;
+package pl.tmaj.common;
 
 public class Winner {
 
