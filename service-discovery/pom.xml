@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>pl.tmaj</groupId>
-    <artifactId>praca-dyplomowa-java-eureka-server</artifactId>
+    <groupId>pl.tmaj.pracadyplomowa</groupId>
+    <artifactId>service-discovery</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
@@ -27,10 +27,6 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-eureka-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-hystrix</artifactId>
         </dependency>
     </dependencies>
 
