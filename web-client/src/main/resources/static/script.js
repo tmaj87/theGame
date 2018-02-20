@@ -12,6 +12,10 @@ $(function () {
 
         stompClient.subscribe('/feed/info', function (data) {
             let content = JSON.parse(data.body).content;
+            if (content == 'bye') {
+                stompClient.disconnect();
+                content = 'Gra skończona, <a href="/">zagraj jeszcze raz</a>';
+            }
             $('#message_box').append('<div class="general">' + content + '</div>');
         });
 

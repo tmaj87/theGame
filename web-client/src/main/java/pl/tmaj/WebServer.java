@@ -14,15 +14,20 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 @Component
 public class WebServer {
 
+    private static final String JOINED = " joined";
+    private static final String LEFT = " left";
+    private static final String BYE = "bye";
+    private static final String YOU_WIN = "You win!";
+    private static final String WON = " won";
+    private int maxPlayers;
+
     private Queue<String> players = new ConcurrentLinkedQueue<>();
 
-    private int maxPlayers;
     private SimpMessagingTemplate template;
     private WinnerRepository repository;
 
-
-    public WebServer(@Value("${max.players:2}") int maxPlayers, SimpMessagingTemplate template, WinnerRepository repository) {
-        this.maxPlayers = 3;
+    public WebServer(@Value("${max.players:1}") int maxPlayers, SimpMessagingTemplate template, WinnerRepository repository) {
+        this.maxPlayers = maxPlayers;
         this.template = template;
         this.repository = repository;
     }
@@ -36,35 +41,35 @@ public class WebServer {
     private void initGame() {
         String playerId = pickRandomPlayer();
         repository.save(new Winner(playerId));
-        feedToInfo(playerId + " won");
-        feedToPlayer(playerId, "You win!");
+        feedToPlayer(playerId, YOU_WIN);
+        feedToInfo(playerId + WON);
         disconnectAllPlayers();
     }
 
     private String pickRandomPlayer() {
         Random random = new Random();
         int randomInt = random.nextInt(players.size());
-        return getNthPlayer(randomInt);
+        return getNthPlayerId(randomInt);
     }
 
-    private String getNthPlayer(int randomInt) {
+    private String getNthPlayerId(int randomInt) {
         return (String) players.toArray()[randomInt];
     }
 
     private void disconnectAllPlayers() {
-        feedToInfo("bye");
+        feedToInfo(BYE);
         players.clear();
     }
 
     public void addUserAndNotify(String playerId) {
         players.add(playerId);
-        feedToInfo(playerId + " joined");
+        feedToInfo(playerId + JOINED);
         shouldInitGame();
     }
 
     public void removeUserAndNotify(String playerId) {
         players.remove(playerId);
-        feedToInfo(playerId + " left");
+        feedToInfo(playerId + LEFT);
     }
 
     private void feedToInfo(String content) {
