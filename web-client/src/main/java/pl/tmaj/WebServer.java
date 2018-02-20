@@ -11,14 +11,13 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import static pl.tmaj.common.SimpleMessageType.JOIN;
+import static pl.tmaj.common.SimpleMessageType.LEFT;
+import static pl.tmaj.common.SimpleMessageType.WON;
+
 @Component
 public class WebServer {
 
-    private static final String JOINED = " joined";
-    private static final String LEFT = " left";
-    private static final String BYE = "bye";
-    private static final String YOU_WIN = "You win!";
-    private static final String WON = " won";
     private int maxPlayers;
 
     private Queue<String> players = new ConcurrentLinkedQueue<>();
@@ -41,9 +40,8 @@ public class WebServer {
     private void initGame() {
         String playerId = pickRandomPlayer();
         repository.save(new Winner(playerId));
-        feedToPlayer(playerId, YOU_WIN);
-        feedToInfo(playerId + WON);
-        disconnectAllPlayers();
+        feedNewMessage(new SimpleMessage(playerId, WON));
+        players.clear();
     }
 
     private String pickRandomPlayer() {
@@ -56,27 +54,18 @@ public class WebServer {
         return (String) players.toArray()[randomInt];
     }
 
-    private void disconnectAllPlayers() {
-        feedToInfo(BYE);
-        players.clear();
-    }
-
     public void addUserAndNotify(String playerId) {
         players.add(playerId);
-        feedToInfo(playerId + JOINED);
+        feedNewMessage(new SimpleMessage(playerId, JOIN));
         shouldInitGame();
     }
 
     public void removeUserAndNotify(String playerId) {
         players.remove(playerId);
-        feedToInfo(playerId + LEFT);
+        feedNewMessage(new SimpleMessage(playerId, LEFT));
     }
 
-    private void feedToInfo(String content) {
-        template.convertAndSend("/feed/info", new SimpleMessage(content));
-    }
-
-    private void feedToPlayer(String playerId, String content) {
-        template.convertAndSend("/feed/" + playerId, new SimpleMessage(content));
+    private void feedNewMessage(SimpleMessage message) {
+        template.convertAndSend("/feed/info", message);
     }
 }

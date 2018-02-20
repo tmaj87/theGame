@@ -11,12 +11,30 @@ $(function () {
         $('#hi').html(welcome + sessionId + "!");
 
         stompClient.subscribe('/feed/info', function (data) {
-            let content = JSON.parse(data.body).content;
-            if (content == 'bye') {
-                stompClient.disconnect();
-                content = 'Gra skończona, <a href="/">zagraj jeszcze raz</a>';
+            let body = JSON.parse(data.body);
+            let content = body.content;
+            let message;
+            switch (body.type.toLowerCase()) {
+                case 'join' :
+                    message = content + ' dołączył do gry';
+                    break;
+                case 'left' :
+                    message = content + ' opuścił grę';
+                    break;
+                case 'won' :
+                    stompClient.disconnect();
+                    if (content == sessionId) {
+                        message = 'Wygrałeś!';
+                    } else {
+                        message = 'Przegrałeś,';
+                    }
+                    message += ' <a href="/">zagraj jeszcze raz</a>';
+                    break;
+                default :
+                    message = content;
+                    break;
             }
-            $('#message_box').append('<div class="general">' + content + '</div>');
+            $('#message_box').append('<div class="general">' + message + '</div>');
         });
 
         stompClient.subscribe('/feed/' + sessionId, function (data) {
