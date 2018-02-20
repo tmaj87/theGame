@@ -7,8 +7,8 @@ import pl.tmaj.common.Winner;
 import pl.tmaj.common.WinnerRepository;
 
 import java.util.List;
-import java.util.stream.Stream;
 
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 @RestController
@@ -21,8 +21,7 @@ public class Scoreboard {
     }
 
     public List<String> fallback() {
-        return Stream.of("AAA", "DDD", "XXX")
-                .collect(toList());
+        return singletonList("Hello traveler");
     }
 
     @HystrixCommand(fallbackMethod = "fallback")
