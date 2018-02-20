@@ -4,11 +4,7 @@
     <meta charset="UTF-8">
     <title>WebClient</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <style>
-        html {
-            font-family: 'Roboto', sans-serif;
-        }
-    </style>
+    <link href="style.css" rel="stylesheet">
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
@@ -16,10 +12,12 @@
 </head>
 <body>
 
-<h1>Witaj!</h1>
-<input type="text" id="message" placeholder="Say 'hello'!">
-<button onclick="sendMessage()">Send message</button>
-<div class="message_box"></div>
+<h1 id="hi"></h1>
+<form id="form">
+    <input type="text" id="message" placeholder="Wpisz wiadomość">
+    <input type="submit" value="Wyślij">
+</form>
+<div id="message_box"></div>
 
 </body>
 </html>

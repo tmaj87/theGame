@@ -1,0 +1,15 @@
+html {
+    font-family: 'Roboto', sans-serif;
+}
+
+#message_box {
+    margin-top: 30px;
+}
+
+.general {
+    color: blue;
+}
+
+.private {
+    color: red;
+}

@@ -1,13 +1,11 @@
 package pl.tmaj;
 
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import pl.tmaj.common.HashIt;
 import pl.tmaj.common.SimpleMessage;
 
 import java.util.Map;
@@ -30,22 +28,22 @@ public class WebSocketEventListener {
     @EventListener
     public void handleNewConnection(SessionConnectEvent event) {
         String playerId = getSimpSessionId(event);
-        players.put(HashIt.of(playerId), DEFAULT_PLAYER_NAME);
-        feedPlayerCount();
+        players.put(playerId, DEFAULT_PLAYER_NAME);
+        feedInfo(playerId + " joined");
     }
 
     @EventListener
     public void handleDisconnect(SessionDisconnectEvent event) {
         String playerId = event.getSessionId();
-        players.remove(HashIt.of(playerId));
-        feedPlayerCount();
+        players.remove(playerId);
+        feedInfo(playerId + " left");
     }
 
     private String getSimpSessionId(SessionConnectEvent event) {
         return (String) event.getMessage().getHeaders().get("simpSessionId");
     }
 
-    private void feedPlayerCount() {
-        template.convertAndSend("/feed/info", new SimpleMessage(players.size() + " players in game"));
+    private void feedInfo(String content) {
+        template.convertAndSend("/feed/info", new SimpleMessage(content));
     }
 }
