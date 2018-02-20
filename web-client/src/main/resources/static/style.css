@@ -6,10 +6,37 @@ html {
     margin-top: 30px;
 }
 
-.general {
+.message {
     color: blue;
+    font-size: 1.1em;
 }
 
-.private {
+.won {
     color: red;
+    font-size: 1.4em;
+}
+
+.left, .join {
+    color: rgba(124,124,124,.8);
+    font-size: .9em;
+}
+
+.left:after {
+    content: ' opuścił grę';
+}
+
+.join:after {
+    content: ' dołączył do gry';
+}
+
+#hi {
+    color: rgba(124,124,124,.8);
+}
+
+#hi:before {
+    content: 'Witaj ';
+}
+
+#hi:after {
+    content: '!';
 }

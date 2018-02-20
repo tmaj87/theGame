@@ -1,6 +1,6 @@
 var emptyString = '';
-var wrote = ' napisał ';
-var welcome = 'Witaj ';
+var wrote = ': ';
+var sendNewMessage = 'Wiadomość...';
 var socket = new SockJS('/register');
 var stompClient = Stomp.over(socket);
 var sessionId;
@@ -8,42 +8,27 @@ var sessionId;
 $(function () {
     stompClient.connect({}, function () {
         sessionId = /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
-        $('#hi').html(welcome + sessionId + "!");
-
-        stompClient.subscribe('/feed/info', function (data) {
-            let body = JSON.parse(data.body);
-            let message = getMessageByType(body);
-            $('#message_box').append('<div class="general">' + message + '</div>');
-        });
-
-        stompClient.subscribe('/feed/' + sessionId, function (data) {
-            let content = JSON.parse(data.body).content;
-            $('#message_box').append('<div class="private">' + content + '</div>');
-        });
+        $('#hi').html(sessionId);
+        stompClient.subscribe('/feed/info', newFeed);
     });
 
     $('#form').submit(function (event) {
         event.preventDefault();
-        let message = $('#message');
-        let toServer = {
-            content: sessionId + wrote + message.val()
-        };
-        stompClient.send("/send/message", {}, JSON.stringify(toServer));
-        message.val(emptyString);
-        message.attr("placeholder", emptyString);
+        submitForm();
     });
 });
 
-function getMessageByType(body) {
+function newFeed(data) {
+    let body = JSON.parse(data.body);
     let content = body.content;
+    let type = body.type.toLowerCase();
+    let message = getMessageByType(content, type);
+    $('#message_box').append('<div class="' + type + '">' + message + '</div>');
+}
+
+function getMessageByType(content, type) {
     let message;
-    switch (body.type.toLowerCase()) {
-        case 'join' :
-            message = content + ' dołączył do gry';
-            break;
-        case 'left' :
-            message = content + ' opuścił grę';
-            break;
+    switch (type) {
         case 'won' :
             stompClient.disconnect();
             if (content === sessionId) {
@@ -58,4 +43,15 @@ function getMessageByType(body) {
             break;
     }
     return message;
+}
+
+function submitForm() {
+    let message = $('#message');
+    let toServer = {
+        content: sessionId + wrote + message.val(),
+        user: sessionId
+    };
+    stompClient.send("/send/message", {}, JSON.stringify(toServer));
+    message.val(emptyString);
+    message.attr("placeholder", sendNewMessage);
 }
