@@ -1,21 +1,15 @@
 var emptyString = '';
 var wrote = ': ';
 var sendNewMessage = 'Wiadomość...';
-var socket = new SockJS('/register');
-var stompClient = Stomp.over(socket);
 var sessionId;
 
-$(function () {
-    stompClient.connect({}, function () {
-        sessionId = /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
-        $('#hi').html(sessionId);
-        stompClient.subscribe('/feed/info', newFeed);
-    });
-
-    $('#form').submit(function (event) {
-        event.preventDefault();
-        submitForm();
-    });
+var socket = new SockJS('/register');
+var stompClient = Stomp.over(socket);
+stompClient.connect({}, function () {
+    sessionId = /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
+    $('#hi').html(sessionId);
+    // postMessage('join', 'Dołączyłeś do gry');
+    stompClient.subscribe('/feed/info', newFeed);
 });
 
 function newFeed(data) {
@@ -23,20 +17,20 @@ function newFeed(data) {
     let content = body.content;
     let type = body.type.toLowerCase();
     let message = getMessageByType(content, type);
-    $('#message_box').append('<div class="' + type + '">' + message + '</div>');
+    postMessage(type, message);
 }
 
 function getMessageByType(content, type) {
     let message;
     switch (type) {
         case 'won' :
-            stompClient.disconnect();
             if (content === sessionId) {
                 message = 'Wygrałeś!';
             } else {
                 message = 'Przegrałeś,';
             }
             message += ' <a href="/">zagraj jeszcze raz</a>';
+            delayedDisconnect();
             break;
         default :
             message = content;
@@ -44,6 +38,21 @@ function getMessageByType(content, type) {
     }
     return message;
 }
+
+function delayedDisconnect() {
+    setTimeout(function () {
+        stompClient.disconnect();
+    }, 1000);
+}
+
+function postMessage(type, message) {
+    $('#message_box').append('<div class="' + type + '">' + message + '</div>');
+}
+
+$('#form').submit(function (event) {
+    event.preventDefault();
+    submitForm();
+});
 
 function submitForm() {
     let message = $('#message');

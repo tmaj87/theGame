@@ -7,20 +7,18 @@ import pl.tmaj.common.SimpleMessage;
 import pl.tmaj.common.Winner;
 import pl.tmaj.common.WinnerRepository;
 
-import java.util.Queue;
+import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import static pl.tmaj.common.SimpleMessageType.JOIN;
-import static pl.tmaj.common.SimpleMessageType.LEFT;
-import static pl.tmaj.common.SimpleMessageType.WON;
+import static pl.tmaj.common.SimpleMessageType.*;
 
 @Component
 public class WebServer {
 
     private int maxPlayers;
 
-    private Queue<String> players = new ConcurrentLinkedQueue<>();
+    private List<String> players = new CopyOnWriteArrayList<>();
 
     private SimpMessagingTemplate template;
     private WinnerRepository repository;
@@ -31,13 +29,13 @@ public class WebServer {
         this.repository = repository;
     }
 
-    private void shouldInitGame() {
+    public void haveLastPlayerJoined() {
         if (players.size() >= maxPlayers) {
-            initGame();
+            pickWinner();
         }
     }
 
-    private void initGame() {
+    private void pickWinner() {
         String playerId = pickRandomPlayer();
         repository.save(new Winner(playerId));
         feedNewMessage(new SimpleMessage(playerId, WON));
@@ -47,20 +45,15 @@ public class WebServer {
     private String pickRandomPlayer() {
         Random random = new Random();
         int randomInt = random.nextInt(players.size());
-        return getNthPlayerId(randomInt);
+        return players.get(randomInt);
     }
 
-    private String getNthPlayerId(int randomInt) {
-        return (String) players.toArray()[randomInt];
-    }
-
-    public void addUserAndNotify(String playerId) {
+    public void addUser(String playerId) {
         players.add(playerId);
         feedNewMessage(new SimpleMessage(playerId, JOIN));
-        shouldInitGame();
     }
 
-    public void removeUserAndNotify(String playerId) {
+    public void removeUser(String playerId) {
         players.remove(playerId);
         feedNewMessage(new SimpleMessage(playerId, LEFT));
     }

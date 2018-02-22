@@ -17,7 +17,7 @@ html {
 }
 
 .left, .join {
-    color: rgba(124,124,124,.8);
+    color: rgba(124, 124, 124, .8);
     font-size: .9em;
 }
 
@@ -29,8 +29,9 @@ html {
     content: ' dołączył do gry';
 }
 
-#hi {
-    color: rgba(124,124,124,.8);
+#hi:before, #hi:after {
+    font-size: .8em;
+    color: rgba(124, 124, 124, .8);
 }
 
 #hi:before {

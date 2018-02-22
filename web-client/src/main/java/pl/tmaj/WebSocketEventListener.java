@@ -1,9 +1,11 @@
 package pl.tmaj;
 
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 @Component
 public class WebSocketEventListener {
@@ -15,18 +17,20 @@ public class WebSocketEventListener {
     }
 
     @EventListener
-    public void handleNewConnection(SessionConnectEvent event) {
-        String playerId = getSimpSessionId(event);
-        server.addUserAndNotify(playerId);
+    public void clientConnected(SessionConnectEvent event) {
+        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
+        String playerId = headers.getSessionId();
+        server.addUser(playerId);
     }
 
     @EventListener
-    public void handleDisconnect(SessionDisconnectEvent event) {
+    public void clientDisconnect(SessionDisconnectEvent event) {
         String playerId = event.getSessionId();
-        server.removeUserAndNotify(playerId);
+        server.removeUser(playerId);
     }
 
-    private String getSimpSessionId(SessionConnectEvent event) {
-        return (String) event.getMessage().getHeaders().get("simpSessionId");
+    @EventListener
+    public void newSubscriber(SessionSubscribeEvent event) {
+        server.haveLastPlayerJoined();
     }
 }
