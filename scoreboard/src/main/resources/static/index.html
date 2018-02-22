@@ -4,14 +4,37 @@
     <meta charset="UTF-8">
     <title>Scoreboard</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="bootstrap.css">
     <link href="style.css" rel="stylesheet">
-    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
-    <script src="script.js"></script>
+    <!--<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>-->
+    <script src="jquery-3.3.1.js"></script>
 </head>
 <body>
 
-<h1>Ostatnich 30 wygranych:</h1>
-<ul class="scoreboard"></ul>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="jumbotron">
+                <h1 class="display-4">Lista wygranych</h1>
+                <p class="lead">Tutaj znajdziesz najlepszych z najlepszych</p>
+            </div>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Miejsce</th>
+                    <th scope="col">Gracz</th>
+                    <th scope="col">Punktów</th>
+                </tr>
+                </thead>
+                <tbody id="scoreboard"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
 
 </body>
 </html>
