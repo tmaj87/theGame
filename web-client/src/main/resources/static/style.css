@@ -2,8 +2,16 @@ html {
     font-family: 'Roboto', sans-serif;
 }
 
+#player_count {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
 #message_box {
     margin-top: 30px;
+    margin-bottom: 10px;
+    max-height: 400px;
+    overflow-y: scroll;
 }
 
 .message {
@@ -29,9 +37,13 @@ html {
     content: ' dołączył do gry';
 }
 
+#hi {
+    margin: 30px auto;
+}
+
 #hi:before, #hi:after {
     font-size: .8em;
-    color: rgba(124, 124, 124, .8);
+    color: #218837;
 }
 
 #hi:before {
@@ -40,4 +52,9 @@ html {
 
 #hi:after {
     content: '!';
+}
+
+.scoreboard_link {
+    margin-top: 40px;
+    display: block;
 }

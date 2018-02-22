@@ -8,21 +8,23 @@ var stompClient = Stomp.over(socket);
 stompClient.connect({}, function () {
     sessionId = /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
     $('#hi').html(sessionId);
-    // postMessage('join', 'Dołączyłeś do gry');
     stompClient.subscribe('/feed/info', newFeed);
+    postNewMessage('logon', 'Dołączyłeś do gry');
 });
 
 function newFeed(data) {
     let body = JSON.parse(data.body);
     let content = body.content;
     let type = body.type.toLowerCase();
-    let message = getMessageByType(content, type);
-    postMessage(type, message);
+    getMessageByType(content, type);
 }
 
 function getMessageByType(content, type) {
     let message;
     switch (type) {
+        case 'count' :
+            $('#player_count').html(content);
+            return;
         case 'won' :
             if (content === sessionId) {
                 message = 'Wygrałeś!';
@@ -30,28 +32,26 @@ function getMessageByType(content, type) {
                 message = 'Przegrałeś,';
             }
             message += ' <a href="/">zagraj jeszcze raz</a>';
-            delayedDisconnect();
+            stompClient.disconnect();
             break;
         default :
             message = content;
             break;
     }
-    return message;
+    postNewMessage(type, message);
 }
 
-function delayedDisconnect() {
-    setTimeout(function () {
-        stompClient.disconnect();
-    }, 1000);
-}
-
-function postMessage(type, message) {
-    $('#message_box').append('<div class="' + type + '">' + message + '</div>');
+function postNewMessage(type, message) {
+    $('#message_box').prepend('<li class="list-group-item ' + type + '">' + message + '</li>');
 }
 
 $('#form').submit(function (event) {
     event.preventDefault();
     submitForm();
+});
+
+$('#scoreboard').click(function (event) {
+    window.open('//localhost:7979');
 });
 
 function submitForm() {

@@ -4,19 +4,52 @@
     <meta charset="UTF-8">
     <title>WebClient</title>
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <!--<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">-->
     <link href="style.css" rel="stylesheet">
+    <link rel="stylesheet" href="bootstrap.css">
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 </head>
 <body>
 
-<h1 id="hi"></h1>
-<form id="form">
-    <input type="text" id="message" placeholder="Wpisz wiadomość">
-    <input type="submit" value="Wyślij">
-</form>
-<div id="message_box"></div>
+<div class="container">
+    <div class="row">
+        <div class="col-12 text-center">
+            <h1 id="hi"></h1>
+            <p>
+                dołączyłeś do gry w której brakuje jeszcze <span id="player_count"></span> graczy.
+            </p>
+            <p>
+                Porozmawiaj z innymi uczestnikami lub zobacz ostatnich wygranych!
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <form id="form">
+                <div class="input-group input-group-lg">
+                    <input type="text" id="message" class="form-control form-control-lg"
+                           placeholder="Wpisz wiadomość">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-lg btn-primary">Wyślij</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <ul id="message_box" class="list-group">
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center">
+            <button id="scoreboard" class="btn btn-info btn-lg btn">Zobacz tablicę wyników</button>
+        </div>
+    </div>
+</div>
 
 <script src="script.js"></script>
 

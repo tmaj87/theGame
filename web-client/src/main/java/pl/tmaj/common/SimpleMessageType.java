@@ -1,5 +1,5 @@
 package pl.tmaj.common;
 
 public enum SimpleMessageType {
-    JOIN, LEFT, WON, MESSAGE
+    JOIN, LEFT, WON, MESSAGE, COUNT
 }

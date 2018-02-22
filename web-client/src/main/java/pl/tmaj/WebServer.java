@@ -30,6 +30,7 @@ public class WebServer {
     }
 
     public void haveLastPlayerJoined() {
+        feedMissingPlayers();
         if (players.size() >= maxPlayers) {
             pickWinner();
         }
@@ -56,6 +57,11 @@ public class WebServer {
     public void removeUser(String playerId) {
         players.remove(playerId);
         feedNewMessage(new SimpleMessage(playerId, LEFT));
+    }
+
+    public void feedMissingPlayers() {
+        String missingPlayers = String.valueOf(maxPlayers - players.size());
+        feedNewMessage(new SimpleMessage(missingPlayers, COUNT));
     }
 
     private void feedNewMessage(SimpleMessage message) {
