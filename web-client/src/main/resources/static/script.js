@@ -28,13 +28,20 @@ function getMessageByType(content, type) {
         case 'won' :
             if (content === sessionId) {
                 message = 'Wygrałeś!';
+                type += ' alert-success';
             } else {
                 message = 'Przegrałeś,';
+                type += ' alert-danger';
             }
             message += ' <a href="/">zagraj jeszcze raz</a>';
             stompClient.disconnect();
             break;
+        case 'message' :
+            type += ' alert-secondary';
+            message = content;
+            break;
         default :
+            type += ' alert-light';
             message = content;
             break;
     }
@@ -42,7 +49,9 @@ function getMessageByType(content, type) {
 }
 
 function postNewMessage(type, message) {
-    $('#message_box').prepend('<li class="list-group-item ' + type + '">' + message + '</li>');
+    let element = $('<div style="display: none" class="alert ' + type + '">' + message + '</div>');
+    $('#message_box').prepend(element);
+    element.slideDown("slow");
 }
 
 $('#form').submit(function (event) {
