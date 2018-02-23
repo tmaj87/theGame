@@ -34,10 +34,11 @@ function getMessageByType(content, type) {
                 type += ' alert-danger';
             }
             message += ' <a href="/">zagraj jeszcze raz</a>';
+            $('#player_count').html("0");
             stompClient.disconnect();
             break;
         case 'message' :
-            type += ' alert-secondary';
+            type += ' alert-info';
             message = content;
             break;
         default :
