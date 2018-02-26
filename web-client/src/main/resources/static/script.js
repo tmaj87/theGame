@@ -50,7 +50,7 @@ function getMessageByType(content, type) {
 }
 
 function postNewMessage(type, message) {
-    let element = $('<div style="display: none" class="alert ' + type + '">' + message + '</div>');
+    let element = $('<div style="display: none" class="border border-secondary alert ' + type + '">' + message + '</div>');
     $('#message_box').prepend(element);
     element.slideDown("slow");
 }
@@ -61,7 +61,7 @@ $('#form').submit(function (event) {
 });
 
 $('#scoreboard').click(function (event) {
-    window.open('//localhost:7979');
+    window.open('//' + location.hostname + ':7979');
 });
 
 function submitForm() {
