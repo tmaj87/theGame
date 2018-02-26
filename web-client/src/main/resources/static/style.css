@@ -1,6 +1,5 @@
 html {
     font-family: 'Roboto', sans-serif;
-    overflow: hidden;
 }
 
 #player_count {
@@ -12,6 +11,13 @@ html {
     margin-top: 30px;
     margin-bottom: 10px;
     max-height: 400px;
+    overflow-y: scroll;
+}
+
+.user:after {
+    content: ':';
+    margin-left: 4px;
+    margin-right: 10px;
 }
 
 .message {

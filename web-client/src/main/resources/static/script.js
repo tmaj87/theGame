@@ -2,6 +2,7 @@ var emptyString = '';
 var wrote = ': ';
 var sendNewMessage = 'Wiadomość...';
 var sessionId;
+var userToColor = {};
 
 var socket = new SockJS('/register');
 var stompClient = Stomp.over(socket);
@@ -16,10 +17,11 @@ function newFeed(data) {
     let body = JSON.parse(data.body);
     let content = body.content;
     let type = body.type.toLowerCase();
-    getMessageByType(content, type);
+    let user = body.user;
+    getMessageByType(content, user, type);
 }
 
-function getMessageByType(content, type) {
+function getMessageByType(content, user, type) {
     let message;
     switch (type) {
         case 'count' :
@@ -37,20 +39,26 @@ function getMessageByType(content, type) {
             $('#player_count').html("0");
             stompClient.disconnect();
             break;
-        case 'message' :
-            type += ' alert-info';
-            message = content;
-            break;
         default :
             type += ' alert-light';
             message = content;
             break;
     }
-    postNewMessage(type, message);
+    if (userToColor[user] === undefined) {
+        userToColor[user] = '#' + pickRandomColor();
+    }
+    postNewMessage(type, user, message);
 }
 
-function postNewMessage(type, message) {
-    let element = $('<div style="display: none" class="border border-secondary alert ' + type + '">' + message + '</div>');
+function pickRandomColor() {
+    var p1 = (Math.round(Math.random()*180)+50).toString(16),
+        p2 = (Math.round(Math.random()*180)+50).toString(16),
+        p3 = (Math.round(Math.random()*180)+50).toString(16);
+    return p1+p2+p3;
+}
+
+function postNewMessage(type, user, message) {
+    let element = $('<div style="display: none" class="border border-secondary alert ' + type + '"><span class="user" style="color: ' + userToColor[user] + ';">' + user + '</span>' + message + '</div>');
     $('#message_box').prepend(element);
     element.slideDown("slow");
 }
@@ -67,8 +75,7 @@ $('#scoreboard').click(function (event) {
 function submitForm() {
     let message = $('#message');
     let toServer = {
-        content: sessionId + wrote + message.val(),
-        user: sessionId
+        content: message.val()
     };
     stompClient.send("/send/message", {}, JSON.stringify(toServer));
     message.val(emptyString);
