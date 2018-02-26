@@ -9,3 +9,8 @@ Coraz częściej duże firmy programistyczne opierają swoje usługi o środowis
 Kluczowym elementem do konstruowania aplikacji w architekturze mikroserwisów jest Spring Boot, biblioteka dostarczająca rozwiązań znacznie ułatwiających tworzenie aplikacji rozproszonych.
 
 Celem tej pracy jest przedstawienie elastycznego środowiska mikro usług, napisany w języku Java wersja 1.8, oparty o system zarządzania zależnościami Mave oraz framework Spring Boot.
+
+![screenshot 01](./screen_004.PNG "01")
+![screenshot 01](./screen_003.PNG "01")
+![screenshot 01](./screen_002.PNG "01")
+![screenshot 01](./screen_001.PNG "01")
