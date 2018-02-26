@@ -27,7 +27,7 @@ public class Scoreboard {
     @HystrixCommand(fallbackMethod = "fallback")
     @GetMapping("/list")
     public List<String> index() {
-        return winnerRepository.getAll()
+        return winnerRepository.getTop30SortedByIdDesc()
                 .getContent()
                 .stream()
                 .map(Winner::getName)

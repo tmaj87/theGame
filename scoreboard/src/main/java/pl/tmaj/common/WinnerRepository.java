@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface WinnerRepository {
 
     @GetMapping(value = "/winners?page=0&size=30&sort=id,desc")
-    Resources<Winner> getAll();
+    Resources<Winner> getTop30SortedByIdDesc();
 }
