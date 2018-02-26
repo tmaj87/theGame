@@ -11,7 +11,6 @@ public class SimpleMessage {
 
     public SimpleMessage(String content, SimpleMessageType type) {
         this.content = content;
-        this.user = "SYSTEM";
         this.type = type;
     }
 

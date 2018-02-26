@@ -14,10 +14,9 @@ html {
     overflow-y: scroll;
 }
 
-.user:after {
+.user:not(:empty):after {
     content: ':';
-    margin-left: 4px;
-    margin-right: 10px;
+    margin: 0 4px 0 2px;
 }
 
 .message {

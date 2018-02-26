@@ -10,14 +10,14 @@ stompClient.connect({}, function () {
     sessionId = /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
     $('#hi').html(sessionId);
     stompClient.subscribe('/feed/info', newFeed);
-    postNewMessage('logon', 'Dołączyłeś do gry');
+    postNewMessage('logon', '', 'Dołączyłeś do gry');
 });
 
 function newFeed(data) {
     let body = JSON.parse(data.body);
     let content = body.content;
     let type = body.type.toLowerCase();
-    let user = body.user;
+    let user = body.user || "";
     getMessageByType(content, user, type);
 }
 
