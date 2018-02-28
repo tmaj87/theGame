@@ -1,17 +1,20 @@
-var emptyString = '';
-var wrote = ': ';
-var sendNewMessage = 'Wiadomość...';
 var sessionId;
 var userToColor = {};
 
 var socket = new SockJS('/register');
 var stompClient = Stomp.over(socket);
 stompClient.connect({}, function () {
-    sessionId = /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
+    sessionId = getUserFromUrl() || /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
+    stompClient.send("/send/username", {}, sessionId);
     $('#hi').html(sessionId);
     stompClient.subscribe('/feed/info', newFeed);
     postNewMessage('logon', '', 'Dołączyłeś do gry');
 });
+
+function getUserFromUrl() {
+    let value = location.search.match(new RegExp('[\?\&]user=([^\&]*)(\&?)', 'i'));
+    return value ? value[1] : value;
+}
 
 function newFeed(data) {
     let body = JSON.parse(data.body);
@@ -35,7 +38,7 @@ function getMessageByType(content, user, type) {
                 message = 'Przegrałeś,';
                 type += ' alert-danger';
             }
-            message += ' <a href="/">zagraj jeszcze raz</a>';
+            message += ' <a href="?user=' + sessionId + '">zagraj jeszcze raz</a>';
             $('#player_count').html("0");
             stompClient.disconnect();
             break;
@@ -51,10 +54,10 @@ function getMessageByType(content, user, type) {
 }
 
 function pickRandomColor() {
-    var p1 = (Math.round(Math.random()*180)+50).toString(16),
-        p2 = (Math.round(Math.random()*180)+50).toString(16),
-        p3 = (Math.round(Math.random()*180)+50).toString(16);
-    return p1+p2+p3;
+    var p1 = (Math.round(Math.random() * 180) + 50).toString(16),
+        p2 = (Math.round(Math.random() * 180) + 50).toString(16),
+        p3 = (Math.round(Math.random() * 180) + 50).toString(16);
+    return p1 + p2 + p3;
 }
 
 function postNewMessage(type, user, message) {
@@ -78,6 +81,6 @@ function submitForm() {
         content: message.val()
     };
     stompClient.send("/send/message", {}, JSON.stringify(toServer));
-    message.val(emptyString);
-    message.attr("placeholder", sendNewMessage);
+    message.val('');
+    message.attr("placeholder", 'Wiadomość...');
 }
