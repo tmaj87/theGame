@@ -5,8 +5,7 @@ var socket = new SockJS('/register');
 var stompClient = Stomp.over(socket);
 stompClient.connect({}, function () {
     sessionId = getUserFromUrl() || /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
-    stompClient.send("/send/username", {}, sessionId);
-    $('#hi').html(sessionId);
+    updateName(sessionId);
     stompClient.subscribe('/feed/info', newFeed);
     postNewMessage('logon', '', 'Dołączyłeś do gry');
 });
@@ -41,6 +40,7 @@ function getMessageByType(content, user, type) {
             message += ' <a href="?user=' + sessionId + '">zagraj jeszcze raz</a>';
             $('#player_count').html("0");
             stompClient.disconnect();
+            $('#name_changer,#send').attr('disabled', '');
             break;
         default :
             type += ' alert-light';
@@ -64,6 +64,16 @@ function postNewMessage(type, user, message) {
     let element = $('<div style="display: none" class="border border-secondary alert ' + type + '"><span class="user" style="color: ' + userToColor[user] + ';">' + user + '</span>' + message + '</div>');
     $('#message_box').prepend(element);
     element.slideDown("slow");
+}
+
+$('#name_changer').click(function () {
+    updateName($('#name').val())
+});
+
+function updateName(name) {
+    sessionId = name;
+    stompClient.send("/send/username", {}, sessionId);
+    $('#hi').html(sessionId);
 }
 
 $('#form').submit(function (event) {

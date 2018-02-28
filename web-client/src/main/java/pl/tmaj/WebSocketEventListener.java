@@ -11,26 +11,28 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 public class WebSocketEventListener {
 
     private WebServer server;
+    private WebServerUsers users;
 
-    public WebSocketEventListener(WebServer server) {
+    public WebSocketEventListener(WebServer server, WebServerUsers users) {
         this.server = server;
+        this.users = users;
     }
 
     @EventListener
     public void clientConnected(SessionConnectEvent event) {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
         String playerId = headers.getSessionId();
-        server.addUser(playerId);
+        users.addUserAndNotifyAll(playerId);
     }
 
     @EventListener
     public void clientDisconnect(SessionDisconnectEvent event) {
         String playerId = event.getSessionId();
-        server.removeUser(playerId);
+        users.removeUserAndNotifyAll(playerId);
     }
 
     @EventListener
     public void newSubscriber(SessionSubscribeEvent event) {
-        server.haveLastPlayerJoined();
+        server.checkPlayerCount();
     }
 }

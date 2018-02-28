@@ -15,8 +15,15 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-12 text-center">
+        <div class="col-8 offset-md-2 text-center">
             <h1 id="hi"></h1>
+            <div class="input-group w-50 container-fluid">
+                <input id="name" type="text" class="form-control form-control-sm" placeholder="Wpisz imię"
+                       maxlength="30"/>
+                <div class="input-group-append">
+                    <button id="name_changer" class="btn btn-sm btn-secondary">Zmień imię</button>
+                </div>
+            </div>
             <p>
                 dołączyłeś do gry w której brakuje jeszcze
                 <span id="player_count"><img src="Loading_icon.gif" class="loading" width="66" height="44"/></span>
@@ -34,7 +41,7 @@
                     <input type="text" id="message" class="form-control form-control-lg"
                            placeholder="Wpisz wiadomość">
                     <div class="input-group-append">
-                        <button type="submit" class="btn btn-lg btn-primary">Wyślij</button>
+                        <button id="send" type="submit" class="btn btn-lg btn-primary">Wyślij</button>
                     </div>
                 </div>
             </form>
@@ -47,7 +54,7 @@
     </div>
     <div class="row">
         <div class="col-12 text-center">
-            <button id="scoreboard" class="btn btn-info btn-lg btn">Zobacz tablicę wyników</button>
+            <button id="scoreboard" class="btn btn-lg btn-info">Zobacz tablicę wyników</button>
         </div>
     </div>
 </div>
