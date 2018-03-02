@@ -6,9 +6,6 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import pl.tmaj.common.SimpleMessage;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import static pl.tmaj.common.SimpleMessageType.MESSAGE;
 
 @Controller
@@ -22,9 +19,15 @@ public class WebSocketController {
 
     @MessageMapping("/message")
     @SendTo("/feed/info")
-    public SimpleMessage info(SimpleMessage message, SimpMessageHeaderAccessor headerAccessor) throws Exception {
-        String sessionId = headerAccessor.getSessionId();
-        return new SimpleMessage(message.getContent(), users.getUserNameOrDefault(sessionId), MESSAGE);
+    public SimpleMessage info(SimpleMessage receivedMessage, SimpMessageHeaderAccessor headers) throws Exception {
+        String sessionId = headers.getSessionId();
+        String username = users.getUserNameOrDefault(sessionId);
+        SimpleMessage outboundMessage = new SimpleMessage(receivedMessage.getContent(), username, MESSAGE);
+        return doNotSendEmptyMessage(outboundMessage);
+    }
+
+    private SimpleMessage doNotSendEmptyMessage(SimpleMessage outboundMessage) {
+        return outboundMessage.getContent().length() > 0 ? outboundMessage : null;
     }
 
     @MessageMapping("/username")
