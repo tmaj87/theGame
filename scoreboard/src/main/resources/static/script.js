@@ -1,17 +1,19 @@
-function obtainNewList() {
-    $.ajax('/list')
+function reprint() {
+    let scoreboard = $('#scoreboard');
+    $.ajax('/best')
         .done(function (data) {
-                let scoreboard = $('#scoreboard');
-                scoreboard.html("");
-                for (let index in data) {
-                    let place = parseInt(index) + 1;
-                    scoreboard.append('<tr class="id_' + place + '"><th scope="row">' + place + '</th><td>' + data[index] + '</td><td>1</td></tr>');
+                scoreboard.html('');
+                let id = 1;
+                for (let player in data) {
+                    let row = $('<tr class="id_' + id + '"><th>' + id + '</th><td>' + player + '</td><td>' + data[player] + '</td></tr>');
+                    id++;
+                    scoreboard.append(row);
                 }
-                setTimeout(obtainNewList, 3000);
+                setTimeout(reprint, 6000);
             }
         );
 }
 
 $(function () {
-    obtainNewList();
+    reprint();
 });
