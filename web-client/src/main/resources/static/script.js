@@ -61,6 +61,9 @@ function pickRandomColor() {
 }
 
 function postNewMessage(type, user, message) {
+    if (user == sessionId) {
+        user = 'Ja'
+    }
     let element = $('<div style="display: none" class="border border-secondary alert ' + type + '"><span class="user" style="color: ' + userToColor[user] + ';">' + user + '</span>' + message + '</div>');
     $('#message_box').prepend(element);
     element.slideDown("slow");
