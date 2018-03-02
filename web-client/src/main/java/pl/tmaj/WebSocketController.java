@@ -21,7 +21,7 @@ public class WebSocketController {
     @SendTo("/feed/info")
     public SimpleMessage info(SimpleMessage receivedMessage, SimpMessageHeaderAccessor headers) throws Exception {
         String sessionId = headers.getSessionId();
-        String username = users.getUserNameOrDefault(sessionId);
+        String username = users.getUserNameOr(sessionId);
         SimpleMessage outboundMessage = new SimpleMessage(receivedMessage.getContent(), username, MESSAGE);
         return doNotSendEmptyMessage(outboundMessage);
     }

@@ -28,7 +28,7 @@ public class WebServerUsers {
         Random random = new Random();
         int randomInt = random.nextInt(users.size());
         String user = users.get(randomInt);
-        return getUserNameOrDefault(user);
+        return getUserNameOr(user);
     }
 
     public int getUsersCount() {
@@ -45,7 +45,7 @@ public class WebServerUsers {
         notifyAll(new SimpleMessage(user, LEFT));
     }
 
-    public String getUserNameOrDefault(String user) {
+    public String getUserNameOr(String user) {
         return names.getOrDefault(user, user);
     }
 
