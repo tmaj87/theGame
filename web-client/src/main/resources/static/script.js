@@ -1,7 +1,7 @@
 var sessionId;
 var userToColor = {};
 
-var socket = new SockJS('/register');
+var socket = new SockJS('//localhost:4321/register');
 var stompClient = Stomp.over(socket);
 stompClient.connect({}, function () {
     sessionId = getUserFromUrl() || /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
