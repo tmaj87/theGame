@@ -24,11 +24,11 @@ public class Scoreboard {
         this.winnerRepository = winnerRepository;
     }
 
-    public Map<String, Long> missingMap() {
+    public Map<String, Long> noRepositoryResponse() {
         return new HashMap<>();
     }
 
-    @HystrixCommand(fallbackMethod = "missingMap")
+    @HystrixCommand(fallbackMethod = "noRepositoryResponse")
     @GetMapping("/best")
     public Map<String, Long> getSortedBestPlayers() {
         Map<String, Long> allPlayersGrouped = winnerRepository.findAll()
