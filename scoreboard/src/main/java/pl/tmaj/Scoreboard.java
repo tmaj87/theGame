@@ -3,8 +3,6 @@ package pl.tmaj;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pl.tmaj.common.Winner;
-import pl.tmaj.common.WinnerRepository;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
