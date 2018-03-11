@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import static java.util.Collections.reverseOrder;
 import static java.util.Map.Entry.comparingByValue;
@@ -15,6 +16,12 @@ import static java.util.stream.Collectors.*;
 
 @RestController
 public class Scoreboard {
+
+    @GetMapping("/latest")
+    public String getTheBast() {
+        Optional<Winner> name = winnerRepository.getLatest().getContent().stream().findFirst();
+        return name.isPresent() ? name.get().toString() : "Winner";
+    }
 
     private WinnerRepository winnerRepository;
 

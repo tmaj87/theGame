@@ -9,4 +9,7 @@ public interface WinnerRepository {
 
     @GetMapping(value = "/winners")
     Resources<Winner> findAll();
+
+    @GetMapping(value = "/winners?size=1&sort=id,desc")
+    Resources<Winner> getLatest();
 }
