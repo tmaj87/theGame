@@ -26,12 +26,12 @@ public class WebSocketController {
         return doNotSendEmptyMessage(outboundMessage);
     }
 
-    private SimpleMessage doNotSendEmptyMessage(SimpleMessage outboundMessage) {
-        return outboundMessage.getContent().length() > 0 ? outboundMessage : null;
-    }
-
     @MessageMapping("/username")
     public void username(String name, SimpMessageHeaderAccessor headerAccessor) throws Exception {
         users.setUserName(headerAccessor.getSessionId(), name);
+    }
+
+    private SimpleMessage doNotSendEmptyMessage(SimpleMessage outboundMessage) {
+        return outboundMessage.getContent().length() > 0 ? outboundMessage : null;
     }
 }
