@@ -1,37 +1,38 @@
 package pl.tmaj;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Set;
+import java.net.Socket;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
-import static pl.tmaj.common.TestConstants.PLAYER_ID_PATTERN;
-import static pl.tmaj.common.TestConstants.SIXTEEN_PLAYERS;
-import static pl.tmaj.common.TestUtils.getNewPlayerId;
-import static pl.tmaj.common.TestUtils.getSetOfSixteenPlayers;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class PlayerHandlerTest {
 
-    // new PlayerHandler( [socket mock] )
+    private static final String PLAYER_ID_PATTERN = "\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}";
+
+    @Mock
+    private Socket socket;
 
     @Test
     public void shouldReturnPlayerId() {
-        String playerId = getNewPlayerId();
+        String playerId = newPlayer().getId();
 
         assertTrue(playerId.matches(PLAYER_ID_PATTERN));
     }
 
     @Test
-    public void shouldReturnDifferentIdForEveryPlayer() {
-        Set<String> playerIds = getSetOfSixteenPlayers();
+    public void shouldReturnDifferentPlayers() {
+        PlayerHandler playerOne = newPlayer();
+        PlayerHandler playerTwo = newPlayer();
 
-        assertEquals(playerIds.size(), SIXTEEN_PLAYERS);
+        assertNotEquals(playerOne, playerTwo);
     }
 
+    private PlayerHandler newPlayer() {
+        return new PlayerHandler(socket);
+    }
 }

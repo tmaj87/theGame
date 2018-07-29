@@ -2,6 +2,7 @@ package pl.tmaj;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
 import pl.tmaj.common.SimpleMessage;
 import pl.tmaj.common.Winner;
@@ -15,6 +16,7 @@ import static pl.tmaj.common.SimpleMessageType.COUNT;
 import static pl.tmaj.common.SimpleMessageType.WON;
 
 @Component
+@RefreshScope
 public class WebServer {
 
     private static final int THREE_SECONDS = 3000;

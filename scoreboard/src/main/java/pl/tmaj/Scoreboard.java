@@ -17,6 +17,11 @@ import static java.util.stream.Collectors.*;
 @RestController
 public class Scoreboard {
 
+    public String noWinner() {
+        return "Be the first to win!";
+    }
+
+    @HystrixCommand(fallbackMethod = "noWinner")
     @GetMapping("/latest")
     public String getTheBast() {
         Optional<Winner> name = winnerRepository.getLatest().getContent().stream().findFirst();

@@ -10,10 +10,10 @@ $(function () {
     let scoreboard = $('#scoreboard');
     let latest = $('#latest');
     print(aWinners);
-    $.ajax({url: '/best', success: reprint});
-    $.ajax('/latest').done(function (data) {
-        latest.html(data);
-    });
+    reprint();
+    // $.ajax('/latest').done(function (data) {
+    //     latest.html(data);
+    // });
 
     function print(data) {
         let id = 1;
@@ -24,9 +24,11 @@ $(function () {
         }
     }
 
-    function reprint(data) {
-        scoreboard.html('');
-        print(data);
-        setTimeout(reprint, 6000);
+    function reprint() {
+        $.ajax('/best').done(function (data) {
+            scoreboard.html('');
+            print(data);
+            setTimeout(reprint, 6000);
+        });
     }
 });

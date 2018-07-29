@@ -1,18 +1,27 @@
 var sessionId;
 var userToColor = {};
 
-var socket = new SockJS('//localhost:4321/register');
+var socket = new SockJS('http://' + location.hostname + ':4321/register');
 var stompClient = Stomp.over(socket);
+
 stompClient.connect({}, function () {
-    sessionId = getUserFromUrl() || /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
+    sessionId = getUserFromUrl() || getUserFromSocket();
     updateName(sessionId);
     stompClient.subscribe('/feed/info', newFeed);
-    postNewMessage('logon', '', 'Dołączyłeś do gry');
+    postLogonMessage();
 });
 
 function getUserFromUrl() {
     let value = location.search.match(new RegExp('[\?\&]user=([^\&]*)(\&?)', 'i'));
     return value ? value[1] : value;
+}
+
+function getUserFromSocket() {
+    return /\/([^\/]+)\/websocket/.exec(socket._transport.url)[1];
+}
+
+function postLogonMessage() {
+    postNewMessage('logon', '', 'Dołączyłeś do gry');
 }
 
 function newFeed(data) {
