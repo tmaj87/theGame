@@ -19,11 +19,14 @@ public class WebSocketController {
 
     @MessageMapping("/message")
     @SendTo("/feed/info")
-    public SimpleMessage info(SimpleMessage receivedMessage, SimpMessageHeaderAccessor headers) throws Exception {
-        String sessionId = headers.getSessionId();
-        String username = users.getUserNameOr(sessionId);
-        SimpleMessage outboundMessage = new SimpleMessage(receivedMessage.getContent(), username, MESSAGE);
-        return doNotSendEmptyMessage(outboundMessage);
+    public SimpleMessage info(SimpleMessage inbound, SimpMessageHeaderAccessor headers) throws Exception {
+        String username = getUserBySessionId(headers.getSessionId());
+        SimpleMessage outbound = new SimpleMessage(inbound.getContent(), username, MESSAGE);
+        return doNotSendEmptyMessage(outbound);
+    }
+
+    private String getUserBySessionId(String sessionId) {
+        return users.getUserNameOr(sessionId);
     }
 
     @MessageMapping("/username")
