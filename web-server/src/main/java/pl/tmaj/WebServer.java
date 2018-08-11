@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.stereotype.Component;
-import pl.tmaj.common.SimpleMessage;
 import pl.tmaj.common.Winner;
 import pl.tmaj.common.WinnerRepository;
 
@@ -12,8 +11,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.slf4j.LoggerFactory.getLogger;
-import static pl.tmaj.common.SimpleMessageType.COUNT;
-import static pl.tmaj.common.SimpleMessageType.WON;
 
 @Component
 @RefreshScope
@@ -25,11 +22,13 @@ public class WebServer {
     private int maxPlayers;
     private WinnerRepository repository;
     private WebServerUsers users;
+    private UserNotifier notifier;
 
-    public WebServer(@Value("${max.players:1}") int maxPlayers, WinnerRepository repository, WebServerUsers users) {
+    public WebServer(@Value("${max.players:1}") int maxPlayers, WinnerRepository repository, WebServerUsers users, UserNotifier notifier) {
         this.maxPlayers = maxPlayers;
         this.repository = repository;
         this.users = users;
+        this.notifier = notifier;
         runPlayerCountNotification();
     }
 
@@ -37,8 +36,8 @@ public class WebServer {
         executor.submit(() -> {
             boolean loop = true;
             while (loop) {
-                String missingPlayers = String.valueOf(maxPlayers - users.getUsersCount());
-                users.notifyAll(new SimpleMessage(missingPlayers, COUNT));
+                int count = maxPlayers - users.count();
+                notifier.notifyCount(count);
                 try {
                     Thread.sleep(THREE_SECONDS);
                 } catch (InterruptedException e) {
@@ -50,15 +49,15 @@ public class WebServer {
     }
 
     public void checkPlayerCount() {
-        if (users.getUsersCount() >= maxPlayers) {
+        if (users.count() >= maxPlayers) {
             pickWinnerAndAnnounce();
         }
     }
 
     private void pickWinnerAndAnnounce() {
-        String user = users.getWinner();
+        String user = users.pickRandomUser().getNick();
         repository.save(new Winner(user));
-        users.notifyAll(new SimpleMessage(user, WON));
-        users.restartGame();
+        notifier.notifyWon(user);
+        users.clear();
     }
 }

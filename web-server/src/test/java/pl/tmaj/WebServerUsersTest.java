@@ -2,8 +2,6 @@ package pl.tmaj;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,14 +13,11 @@ public class WebServerUsersTest {
     private static final int THREE_USERS = 3;
     private static final int NO_USERS = 0;
 
-    @Mock
-    public SimpMessagingTemplate template;
-
     private WebServerUsers users;
 
     @BeforeEach
     void setUp() {
-        users = new WebServerUsers(template);
+        users = new WebServerUsers();
     }
 
     @Test
@@ -41,31 +36,28 @@ public class WebServerUsersTest {
     }
 
     @Test
-    void shouldPickWinner() {
+    void shouldPickRandomUser() {
         addDummyUsers(THREE_USERS);
 
-        assertTrue(users.getWinner().contains(DUMMY_USER));
+        String randomUser = users.pickRandomUser().getNick();
+
+        assertTrue(randomUser.contains(DUMMY_USER));
     }
 
     @Test
     void shouldGetUserCount() {
         addDummyUsers(THREE_USERS);
 
-        assertEquals(THREE_USERS, users.getUsersCount());
+        assertEquals(THREE_USERS, users.count());
     }
 
     @Test
-    void shouldNotifyAboutNewUser() {
-        // breaks SRP
-    }
-
-    @Test
-    void shouldResetGame() {
+    void shouldClearUsers() {
         addDummyUsers(THREE_USERS);
 
-        users.restartGame();
+        users.clear();
 
-        assertEquals(NO_USERS, users.getUsersCount());
+        assertEquals(NO_USERS, users.count());
     }
 
     private void addDummyUsers(int count) {

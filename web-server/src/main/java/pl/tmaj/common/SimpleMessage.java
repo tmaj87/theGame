@@ -1,13 +1,12 @@
 package pl.tmaj.common;
 
+import java.util.Objects;
+
 public class SimpleMessage {
 
     private String content;
     private SimpleMessageType type;
     private String user;
-
-    public SimpleMessage() {
-    }
 
     public SimpleMessage(String content, SimpleMessageType type) {
         this.content = content;
@@ -42,5 +41,29 @@ public class SimpleMessage {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "SimpleMessage{" +
+                "content='" + content + '\'' +
+                ", type=" + type +
+                ", user='" + user + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SimpleMessage that = (SimpleMessage) o;
+        return Objects.equals(content, that.content) &&
+                type == that.type &&
+                Objects.equals(user, that.user);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(content, type, user);
     }
 }

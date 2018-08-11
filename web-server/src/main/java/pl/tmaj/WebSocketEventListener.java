@@ -12,23 +12,27 @@ public class WebSocketEventListener {
 
     private WebServer server;
     private WebServerUsers users;
+    private UserNotifier notifier;
 
-    public WebSocketEventListener(WebServer server, WebServerUsers users) {
+    public WebSocketEventListener(WebServer server, WebServerUsers users, UserNotifier notifier) {
         this.server = server;
         this.users = users;
+        this.notifier = notifier;
     }
 
     @EventListener
     public void clientConnected(SessionConnectEvent event) {
         StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
         String playerId = headers.getSessionId();
-        users.addUserAndNotifyAll(playerId);
+        users.addUser(playerId);
+        notifier.notifyJoin(playerId);
     }
 
     @EventListener
     public void clientDisconnect(SessionDisconnectEvent event) {
         String playerId = event.getSessionId();
-        users.removeUserAndNotifyAll(playerId);
+        users.removeUser(playerId);
+        notifier.notifyLeft(playerId);
     }
 
     @EventListener
