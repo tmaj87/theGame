@@ -11,10 +11,10 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 public class WebSocketEventListener {
 
     private WebServer server;
-    private WebServerUsers users;
-    private UserNotifier notifier;
+    private UsersHandler users;
+    private UsersNotifier notifier;
 
-    public WebSocketEventListener(WebServer server, WebServerUsers users, UserNotifier notifier) {
+    public WebSocketEventListener(WebServer server, UsersHandler users, UsersNotifier notifier) {
         this.server = server;
         this.users = users;
         this.notifier = notifier;

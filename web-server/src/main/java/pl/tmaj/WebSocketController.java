@@ -11,9 +11,9 @@ import static pl.tmaj.common.SimpleMessageType.MESSAGE;
 @Controller
 public class WebSocketController {
 
-    private WebServerUsers users;
+    private UsersHandler users;
 
-    public WebSocketController(WebServerUsers users) {
+    public WebSocketController(UsersHandler users) {
         this.users = users;
     }
 

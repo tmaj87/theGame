@@ -8,7 +8,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class WebServerUsers {
+public class UsersHandler {
 
     private static final User EMPTY_USER = new User("", "");
     private Map<String, User> users = new ConcurrentHashMap<>();

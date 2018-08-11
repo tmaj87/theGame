@@ -7,11 +7,11 @@ import pl.tmaj.common.SimpleMessage;
 import static pl.tmaj.common.SimpleMessageType.*;
 
 @Component
-public class UserNotifier {
+public class UsersNotifier {
 
     private SimpMessagingTemplate template;
 
-    public UserNotifier(SimpMessagingTemplate template) {
+    public UsersNotifier(SimpMessagingTemplate template) {
         this.template = template;
     }
 

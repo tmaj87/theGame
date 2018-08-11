@@ -21,10 +21,10 @@ public class WebServer {
     private Logger logger = getLogger(WebServer.class);
     private int maxPlayers;
     private WinnerRepository repository;
-    private WebServerUsers users;
-    private UserNotifier notifier;
+    private UsersHandler users;
+    private UsersNotifier notifier;
 
-    public WebServer(@Value("${max.players:1}") int maxPlayers, WinnerRepository repository, WebServerUsers users, UserNotifier notifier) {
+    public WebServer(@Value("${max.players:1}") int maxPlayers, WinnerRepository repository, UsersHandler users, UsersNotifier notifier) {
         this.maxPlayers = maxPlayers;
         this.repository = repository;
         this.users = users;

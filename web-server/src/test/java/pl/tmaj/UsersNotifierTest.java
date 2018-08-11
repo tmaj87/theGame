@@ -8,14 +8,14 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static pl.tmaj.common.SimpleMessageType.*;
 
-public class UserNotifierTest {
+public class UsersNotifierTest {
 
     private static final String DUMMY_USER = "dummyUser";
     private static final int ONE_USER = 1;
     private static final String DESTINATION = "/feed/info";
 
     private SimpMessagingTemplate template = mock(SimpMessagingTemplate.class);
-    private UserNotifier notifier = new UserNotifier(template);
+    private UsersNotifier notifier = new UsersNotifier(template);
 
     @Test
     void shouldNotifyAboutNewUser() {

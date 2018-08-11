@@ -6,18 +6,18 @@ import org.junit.jupiter.api.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class WebServerUsersTest {
+public class UsersHandlerTest {
 
     private static final String DUMMY_USER = "dummyUser";
     private static final String NEW_NAME = "newUser";
     private static final int THREE_USERS = 3;
     private static final int NO_USERS = 0;
 
-    private WebServerUsers users;
+    private UsersHandler users;
 
     @BeforeEach
     void setUp() {
-        users = new WebServerUsers();
+        users = new UsersHandler();
     }
 
     @Test
