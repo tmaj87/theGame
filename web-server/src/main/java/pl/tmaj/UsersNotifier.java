@@ -9,6 +9,8 @@ import static pl.tmaj.common.SimpleMessageType.*;
 @Component
 public class UsersNotifier {
 
+    private static final String DESTINATION = "/feed/info";
+
     private SimpMessagingTemplate template;
 
     public UsersNotifier(SimpMessagingTemplate template) {
@@ -32,6 +34,6 @@ public class UsersNotifier {
     }
 
     private void notifyAll(SimpleMessage message) {
-        template.convertAndSend("/feed/info", message);
+        template.convertAndSend(DESTINATION, message);
     }
 }
