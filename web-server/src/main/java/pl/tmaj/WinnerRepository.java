@@ -1,4 +1,4 @@
-package pl.tmaj.common;
+package pl.tmaj;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;

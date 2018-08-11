@@ -3,15 +3,14 @@ package pl.tmaj;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import pl.tmaj.common.SimpleMessage;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static pl.tmaj.common.SimpleMessageType.JOIN;
-import static pl.tmaj.common.SimpleMessageType.MESSAGE;
+import static pl.tmaj.SimpleMessageType.JOIN;
+import static pl.tmaj.SimpleMessageType.MESSAGE;
 
 public class WebSocketControllerTest {
 

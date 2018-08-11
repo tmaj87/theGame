@@ -2,9 +2,8 @@ package pl.tmaj;
 
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
-import pl.tmaj.common.SimpleMessage;
 
-import static pl.tmaj.common.SimpleMessageType.*;
+import static pl.tmaj.SimpleMessageType.*;
 
 @Component
 public class UsersNotifier {

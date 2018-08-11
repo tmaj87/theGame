@@ -2,11 +2,10 @@ package pl.tmaj;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import pl.tmaj.common.SimpleMessage;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static pl.tmaj.common.SimpleMessageType.*;
+import static pl.tmaj.SimpleMessageType.*;
 
 public class UsersNotifierTest {
 

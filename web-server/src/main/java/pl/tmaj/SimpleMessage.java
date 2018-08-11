@@ -1,4 +1,4 @@
-package pl.tmaj.common;
+package pl.tmaj;
 
 import java.util.Objects;
 
