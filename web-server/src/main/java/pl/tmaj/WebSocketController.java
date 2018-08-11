@@ -26,7 +26,7 @@ public class WebSocketController {
     }
 
     private String getUserBySessionId(String sessionId) {
-        return users.getUserNameOr(sessionId);
+        return users.getUser(sessionId);
     }
 
     @MessageMapping("/username")

@@ -56,9 +56,9 @@ public class WebServer {
     }
 
     private void pickWinnerAndAnnounce() {
-        String user = users.pickRandomUser();
+        String user = users.getWinner();
         repository.save(new Winner(user));
         users.notifyAll(new SimpleMessage(user, WON));
-        users.clearAllUsers();
+        users.restartGame();
     }
 }
