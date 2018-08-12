@@ -7,6 +7,8 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
+import static org.springframework.messaging.simp.stomp.StompHeaderAccessor.wrap;
+
 @Component
 public class WebSocketEventListener {
 
@@ -22,10 +24,14 @@ public class WebSocketEventListener {
 
     @EventListener
     public void clientConnected(SessionConnectEvent event) {
-        StompHeaderAccessor headers = StompHeaderAccessor.wrap(event.getMessage());
-        String playerId = headers.getSessionId();
+        String playerId = getStopmSessionId(event);
         users.addUser(playerId);
         notifier.notifyJoin(playerId);
+    }
+
+    private String getStopmSessionId(SessionConnectEvent event) {
+        StompHeaderAccessor headers = wrap(event.getMessage());
+        return headers.getSessionId();
     }
 
     @EventListener
@@ -37,6 +43,6 @@ public class WebSocketEventListener {
 
     @EventListener
     public void newSubscriber(SessionSubscribeEvent event) {
-        server.checkPlayerCount();
+        server.ping();
     }
 }

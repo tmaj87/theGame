@@ -14,10 +14,10 @@ public class WebServerTest {
     private static final User USER = new User(DUMMY_USER, DUMMY_USER);
     private static final int SOME_VALUE = 14;
 
-    private UsersHandler users = mock(UsersHandler.class);
-    private UsersNotifier notifier = mock(UsersNotifier.class);
-    private WinnerRepository repository = mock(WinnerRepository.class);
-    private WebServer server = new WebServer(repository, users, notifier);
+    private final UsersHandler users = mock(UsersHandler.class);
+    private final UsersNotifier notifier = mock(UsersNotifier.class);
+    private final WinnerRepository repository = mock(WinnerRepository.class);
+    private final WebServer server = new WebServer(repository, users, notifier);
 
     @BeforeEach
     void setUp() {
@@ -29,14 +29,14 @@ public class WebServerTest {
     void shouldWaitIfNotFullGame() {
         setMaxPlayersToSomeValue();
 
-        server.checkPlayerCount();
+        server.ping();
 
         verify(repository, never()).save(WINNER);
     }
 
     @Test
-    void shouldEvaluateWinner() {
-        server.checkPlayerCount();
+    void shouldSaveAndNotifyAboutWinner() {
+        server.ping();
 
         verify(repository).save(WINNER);
         verify(notifier).notifyWon(WINNER.getName());
@@ -44,7 +44,7 @@ public class WebServerTest {
 
     @Test
     void shouldClearPlayerPoolAfterGame() {
-        server.checkPlayerCount();
+        server.ping();
 
         verify(users).clear();
     }

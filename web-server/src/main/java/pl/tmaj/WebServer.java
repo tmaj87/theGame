@@ -15,19 +15,19 @@ public class WebServer {
     @Value("${max.players:1}")
     private int maxPlayers;
 
-    public void checkPlayerCount() {
-        if (users.count() >= maxPlayers) {
-            pickWinnerAndAnnounce();
-            restartGame();
-        }
-    }
-
     public WebServer(WinnerRepository repository,
                      UsersHandler users,
                      UsersNotifier notifier) {
         this.repository = repository;
         this.users = users;
         this.notifier = notifier;
+    }
+
+    public void ping() {
+        if (users.count() >= maxPlayers) {
+            pickWinnerAndAnnounce();
+            restartGame();
+        }
     }
 
     private void pickWinnerAndAnnounce() {
@@ -46,5 +46,9 @@ public class WebServer {
 
     private void restartGame() {
         users.clear();
+    }
+
+    public int getMaxPlayers() {
+        return maxPlayers;
     }
 }
