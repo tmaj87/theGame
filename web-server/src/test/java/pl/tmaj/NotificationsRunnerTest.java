@@ -11,10 +11,10 @@ import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 public class NotificationsRunnerTest {
 
-    private final Notifications post = mock(Notifications.class);
+    private final Notifications notifications = mock(Notifications.class);
     private final ExecutorService executor = mock(ExecutorService.class);
 
-    private NotificationsRunner runner = new NotificationsRunner(post);
+    private NotificationsRunner runner = new NotificationsRunner(notifications);
 
     @BeforeEach
     void injectMocks() {
