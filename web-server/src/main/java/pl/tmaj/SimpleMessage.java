@@ -8,6 +8,9 @@ public class SimpleMessage {
     private SimpleMessageType type;
     private String user;
 
+    public SimpleMessage() {
+    }
+
     public SimpleMessage(String content, SimpleMessageType type) {
         this.content = content;
         this.type = type;
