@@ -10,22 +10,31 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import static java.util.Collections.reverseOrder;
+import static java.util.Comparator.reverseOrder;
 import static java.util.Map.Entry.comparingByValue;
 import static java.util.stream.Collectors.*;
 
 @RestController
 public class Scoreboard {
 
+    private static final String WINNER = "NO_WINNER";
+
     public String noWinner() {
-        return "Be the first to win!";
+        return WINNER;
     }
 
     @HystrixCommand(fallbackMethod = "noWinner")
     @GetMapping("/latest")
-    public String getTheBast() {
-        Optional<Winner> name = winnerRepository.getLatest().getContent().stream().findFirst();
-        return name.isPresent() ? name.get().toString() : "Winner";
+    public String getBestPlayer() {
+        Optional<Winner> name = getLatestWinner();
+        return name.isPresent() ? name.get().toString() : WINNER;
+    }
+
+    private Optional<Winner> getLatestWinner() {
+        return winnerRepository.getLatest()
+                .getContent()
+                .stream()
+                .findFirst();
     }
 
     private WinnerRepository winnerRepository;
@@ -41,14 +50,18 @@ public class Scoreboard {
     @HystrixCommand(fallbackMethod = "noRepositoryResponse")
     @GetMapping("/best")
     public Map<String, Long> getSortedBestPlayers() {
-        Map<String, Long> allPlayersGrouped = winnerRepository.findAll()
-                .getContent().stream()
+        Map<String, Long> allPlayersGrouped = winnerRepository
+                .findAll()
+                .getContent()
+                .stream()
                 .collect(groupingBy(Winner::getName, counting()));
         return sortPlayersByBest(allPlayersGrouped);
     }
 
     private Map<String, Long> sortPlayersByBest(Map<String, Long> allPlayersGrouped) {
-        return allPlayersGrouped.entrySet().stream()
+        return allPlayersGrouped
+                .entrySet()
+                .stream()
                 .sorted(comparingByValue(reverseOrder()))
                 .collect(toMap(
                         Entry::getKey,
