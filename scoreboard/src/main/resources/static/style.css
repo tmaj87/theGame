@@ -14,7 +14,6 @@ html {
     font-size: 1.1em;
 }
 
-#latest {
-    font-weight: bold;
-    font-size: 1.4em;
+.latest_winner {
+    font-size: 4em;
 }

@@ -9,13 +9,20 @@ var aWinners = {
 $(function () {
     let scoreboard = $('#scoreboard');
     let latest = $('#latest');
-    print(aWinners);
-    reprint();
-    // $.ajax('/latest').done(function (data) {
-    //     latest.html(data);
-    // });
 
-    function print(data) {
+    best(aWinners);
+    bestWrapper();
+    latestWrapper();
+
+    function bestWrapper() {
+        $.ajax('/best').done(function (data) {
+            scoreboard.html('');
+            best(data);
+            setTimeout(bestWrapper, 4000);
+        });
+    }
+
+    function best(data) {
         let id = 1;
         for (let player in data) {
             let row = $('<tr class="id_' + id + '"><th>' + id + '</th><td>' + player + '</td><td>' + data[player] + '</td></tr>');
@@ -24,11 +31,10 @@ $(function () {
         }
     }
 
-    function reprint() {
-        $.ajax('/best').done(function (data) {
-            scoreboard.html('');
-            print(data);
-            setTimeout(reprint, 6000);
+    function latestWrapper() {
+        $.ajax('/latest').done(function (data) {
+            latest.html(data);
+            setTimeout(latestWrapper, 3000);
         });
     }
 });

@@ -17,9 +17,10 @@
         <div class="col-md-8 offset-md-2">
             <div class="jumbotron">
                 <h1 class="display-4">Tablica wyników</h1>
-                <p class="lead">Tutaj znajdziesz najlepszych z najlepszych
-                    <!--<br>Ostatnio wygrał: <span id="latest"></span>-->
-                </p>
+                <p class="lead">Tutaj znajdziesz najlepszych z najlepszych</p>
+                <div style="text-align: center">
+                    ostatnio wygrał: <span id="latest" class="latest_winner">...</span>
+                </div>
             </div>
 
             <table class="table table-striped">
@@ -38,7 +39,9 @@
         <div class="col-md-8 offset-md-2">
             <div class="row">
                 <div class="col-12 text-center">
-                    <button onclick="window.open('//' + location.hostname + ':1234');" class="btn btn-lg btn-info">Zagraj!</button>
+                    <button onclick="window.open('//' + location.hostname + ':1234');" class="btn btn-lg btn-info">
+                        Zagraj!
+                    </button>
                 </div>
             </div>
         </div>
