@@ -25,18 +25,14 @@ public class ScoreboardTest {
     @Before
     public void setUp() {
         winners = new ArrayList<>();
-        when(repository.getLatest()).thenReturn(resources);
+        when(repository.findAll()).thenReturn(resources);
         when(resources.getContent()).thenReturn(winners);
     }
 
     @Test
     public void shouldGetLatestWinner() {
-        addWinner(DUMMY_PLAYER);
-        addWinner(ANOTHER_DUMMY_PLAYER);
-
-        String latest = scoreboard.getBestPlayer();
-
-        assertEquals(ANOTHER_DUMMY_PLAYER, latest);
+        // there is no need to test it,
+        // REST endpoint "/winners?size=1&sort=id,desc" provides latest winner
     }
 
     @Test
@@ -45,15 +41,16 @@ public class ScoreboardTest {
         addWinner(DUMMY_PLAYER);
         addWinner(ANOTHER_DUMMY_PLAYER);
 
-        Map<String, Integer> sorted = scoreboard.getSortedBestPlayers();
+        Map<String, Long> sorted = scoreboard.getSortedPlayers();
 
         assertEquals(2, sorted.size());
-        assertEquals(2, sorted.get(DUMMY_PLAYER));
-        assertEquals(1, sorted.get(ANOTHER_DUMMY_PLAYER));
+        assertEquals(2, (long) sorted.get(DUMMY_PLAYER));
+        assertEquals(1, (long) sorted.get(ANOTHER_DUMMY_PLAYER));
     }
 
     private void addWinner(String name) {
-        winners.add(new Winner(name, getLatestId()));
+        Long latest = getLatestId();
+        winners.add(new Winner(name, ++latest));
     }
 
     private Long getLatestId() {
@@ -62,7 +59,6 @@ public class ScoreboardTest {
             lastId = 1L;
         } else {
             lastId = winners.get(winners.size() - 1).getId();
-            lastId++;
         }
         return lastId;
     }

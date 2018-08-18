@@ -17,48 +17,43 @@ import static java.util.stream.Collectors.*;
 @RestController
 public class Scoreboard {
 
-    private static final String WINNER = "NO_WINNER";
+    private static final Winner NO_WINNER = new Winner("NO_WINNER");
 
-    public String noWinner() {
-        return WINNER;
-    }
-
-    @HystrixCommand(fallbackMethod = "noWinner")
-    @GetMapping("/latest")
-    public String getBestPlayer() {
-        Optional<Winner> name = getLatestWinner();
-        return name.isPresent() ? name.get().toString() : WINNER;
-    }
-
-    private Optional<Winner> getLatestWinner() {
-        return winnerRepository.getLatest()
-                .getContent()
-                .stream()
-                .findFirst();
-    }
-
-    private WinnerRepository winnerRepository;
+    private final WinnerRepository winnerRepository;
 
     public Scoreboard(WinnerRepository winnerRepository) {
         this.winnerRepository = winnerRepository;
     }
 
-    public Map<String, Long> noRepositoryResponse() {
-        return new HashMap<>();
+    @HystrixCommand(fallbackMethod = "noWinners")
+    @GetMapping("/latest")
+    public String getBestPlayer() {
+        return getLatestWinner().getName();
+    }
+
+    private Winner getLatestWinner() {
+        Optional<Winner> winner = winnerRepository.getLatest()
+                .getContent()
+                .stream()
+                .findFirst();
+        return winner.orElse(NO_WINNER);
+    }
+
+    public String noWinners() {
+        return NO_WINNER.getName();
     }
 
     @HystrixCommand(fallbackMethod = "noRepositoryResponse")
     @GetMapping("/best")
-    public Map<String, Long> getSortedBestPlayers() {
-        Map<String, Long> allPlayersGrouped = winnerRepository
-                .findAll()
+    public Map<String, Long> getSortedPlayers() {
+        Map<String, Long> groupedPlayers = winnerRepository.findAll()
                 .getContent()
                 .stream()
                 .collect(groupingBy(Winner::getName, counting()));
-        return sortPlayersByBest(allPlayersGrouped);
+        return sortPlayersByPointsDesc(groupedPlayers);
     }
 
-    private Map<String, Long> sortPlayersByBest(Map<String, Long> allPlayersGrouped) {
+    private Map<String, Long> sortPlayersByPointsDesc(Map<String, Long> allPlayersGrouped) {
         return allPlayersGrouped
                 .entrySet()
                 .stream()
@@ -71,5 +66,9 @@ public class Scoreboard {
                         },
                         LinkedHashMap::new
                 ));
+    }
+
+    public Map<String, Long> noRepositoryResponse() {
+        return new HashMap<>();
     }
 }
