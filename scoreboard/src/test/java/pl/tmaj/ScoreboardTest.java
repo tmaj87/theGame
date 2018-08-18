@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -16,30 +18,33 @@ public class ScoreboardTest {
 
     private static final String DUMMY_PLAYER = "dummyPlayer";
     private static final String ANOTHER_DUMMY_PLAYER = "anotherDummyPlayer";
+    private static final Winner DUMMY_WINNER = new Winner(DUMMY_PLAYER);
 
     private final WinnerRepository repository = mock(WinnerRepository.class);
-    private final Resources resources = mock(Resources.class);
-    private List<Winner> winners;
     private Scoreboard scoreboard = new Scoreboard(repository);
+    private List<Winner> winners;
 
     @Before
     public void setUp() {
         winners = new ArrayList<>();
-        when(repository.findAll()).thenReturn(resources);
-        when(resources.getContent()).thenReturn(winners);
+        Resources latestResources = mock(Resources.class);
+        when(repository.getLatest()).thenReturn(latestResources);
+        when(latestResources.getContent()).thenReturn(singletonList(DUMMY_WINNER));
+        Resources allResources = mock(Resources.class);
+        when(repository.findAll()).thenReturn(allResources);
+        when(allResources.getContent()).thenReturn(winners);
     }
 
     @Test
     public void shouldGetLatestWinner() {
-        // there is no need to test it,
-        // REST endpoint "/winners?size=1&sort=id,desc" provides latest winner
+        String best = scoreboard.getBestPlayer();
+
+        assertEquals(DUMMY_PLAYER, best);
     }
 
     @Test
     public void shouldGetSortedPlayersByPoints() {
-        addWinner(DUMMY_PLAYER);
-        addWinner(DUMMY_PLAYER);
-        addWinner(ANOTHER_DUMMY_PLAYER);
+        addWinners(asList(DUMMY_PLAYER, DUMMY_PLAYER, ANOTHER_DUMMY_PLAYER));
 
         Map<String, Long> sorted = scoreboard.getSortedPlayers();
 
@@ -48,9 +53,11 @@ public class ScoreboardTest {
         assertEquals(1, (long) sorted.get(ANOTHER_DUMMY_PLAYER));
     }
 
-    private void addWinner(String name) {
+    private void addWinners(List<String> list) {
         Long latest = getLatestId();
-        winners.add(new Winner(name, ++latest));
+        for (String name : list) {
+            winners.add(new Winner(name, ++latest));
+        }
     }
 
     private Long getLatestId() {
