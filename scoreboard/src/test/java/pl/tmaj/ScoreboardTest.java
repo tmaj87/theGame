@@ -4,7 +4,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.hateoas.Resources;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -12,10 +14,8 @@ import static org.mockito.Mockito.when;
 
 public class ScoreboardTest {
 
-    private static final String DUMMY_PLAYER = "DUMMY_PLAYER";
-    private static final String DUMMY_PLAYER_1 = DUMMY_PLAYER + "_1";
-    private static final String DUMMY_PLAYER_2 = DUMMY_PLAYER + "_2";
-    private static final String DUMMY_PLAYER_3 = DUMMY_PLAYER + "_3";
+    private static final String DUMMY_PLAYER = "dummyPlayer";
+    private static final String ANOTHER_DUMMY_PLAYER = "anotherDummyPlayer";
 
     private final WinnerRepository repository = mock(WinnerRepository.class);
     private final Resources resources = mock(Resources.class);
@@ -31,33 +31,39 @@ public class ScoreboardTest {
 
     @Test
     public void shouldGetLatestWinner() {
-        addWinner(DUMMY_PLAYER_1);
-        addWinner(DUMMY_PLAYER_2);
-        addWinner(DUMMY_PLAYER_3);
+        addWinner(DUMMY_PLAYER);
+        addWinner(ANOTHER_DUMMY_PLAYER);
+
         String latest = scoreboard.getBestPlayer();
 
-        assertEquals(DUMMY_PLAYER, latest);
+        assertEquals(ANOTHER_DUMMY_PLAYER, latest);
     }
 
     @Test
     public void shouldGetSortedPlayersByPoints() {
-        addWinner(DUMMY_PLAYER_1);
-        String latest = scoreboard.getBestPlayer();
+        addWinner(DUMMY_PLAYER);
+        addWinner(DUMMY_PLAYER);
+        addWinner(ANOTHER_DUMMY_PLAYER);
 
-        assertEquals(DUMMY_PLAYER, latest);
-    }
+        Map<String, Integer> sorted = scoreboard.getSortedBestPlayers();
 
-    @Test
-    public void shouldGetDefaultContentInCaseOfNoResponse() {
-
-    }
-
-    @Test
-    public void shouldGetDefaultContentInCaseOfNoWinners() {
-
+        assertEquals(2, sorted.size());
+        assertEquals(2, sorted.get(DUMMY_PLAYER));
+        assertEquals(1, sorted.get(ANOTHER_DUMMY_PLAYER));
     }
 
     private void addWinner(String name) {
-        winners.add(new Winner(name));
+        winners.add(new Winner(name, getLatestId()));
+    }
+
+    private Long getLatestId() {
+        Long lastId;
+        if (winners.size() == 0) {
+            lastId = 1L;
+        } else {
+            lastId = winners.get(winners.size() - 1).getId();
+            lastId++;
+        }
+        return lastId;
     }
 }
