@@ -48,7 +48,7 @@ public class WebServer {
         users.clear();
     }
 
-    public int getMaxPlayers() {
-        return maxPlayers;
+    public int getMissingPlayers() {
+        return maxPlayers - users.count();
     }
 }
