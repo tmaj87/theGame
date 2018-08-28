@@ -20,19 +20,27 @@ public class Notifications implements Runnable {
 
     @Override
     public void run() {
-        while (loop) {
-            int missing = server.getMissingPlayers();
-            notifier.notifyCount(missing);
-            server.ping();
-            try {
+        try {
+            while (loop) {
+                notifyAboutMissingPlayers();
+                server.ping();
                 sleeper.sleep(THREE_SECONDS);
-            } catch (InterruptedException e) {
-                loop = false;
             }
+        } catch (InterruptedException e) {
+            loop = false;
         }
+    }
+
+    private void notifyAboutMissingPlayers() {
+        int missing = server.getMissingPlayers();
+        notifier.notifyCount(missing);
     }
 
     public boolean isRunning() {
         return loop;
+    }
+
+    public void stop() {
+        loop = false;
     }
 }
