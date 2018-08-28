@@ -27,7 +27,7 @@ public class Notifications implements Runnable {
                 sleeper.sleep(THREE_SECONDS);
             }
         } catch (InterruptedException e) {
-            loop = false;
+            stop();
         }
     }
 

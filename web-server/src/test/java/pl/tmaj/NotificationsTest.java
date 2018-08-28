@@ -8,25 +8,24 @@ import org.mockito.verification.VerificationMode;
 import java.util.concurrent.ExecutorService;
 
 import static java.util.concurrent.Executors.newFixedThreadPool;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.awaitility.Awaitility.await;
+import static org.awaitility.Duration.ONE_SECOND;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
 public class NotificationsTest {
 
+    private final WebServer server = mock(WebServer.class);
+    private final UsersNotifier notifier = mock(UsersNotifier.class);
+    private final Sleeper sleeper = mock(Sleeper.class);
+
     private ExecutorService executor;
-    private WebServer server;
-    private UsersNotifier notifier;
-    private Sleeper sleeper;
     private Notifications notifications;
 
     @BeforeEach
     void setUp() {
-        server = mock(WebServer.class);
-        notifier = mock(UsersNotifier.class);
-        sleeper = mock(Sleeper.class);
-        notifications = new Notifications(server, notifier, sleeper);
         executor = newFixedThreadPool(1);
+        notifications = new Notifications(server, notifier, sleeper);
         executor.execute(notifications);
     }
 
@@ -52,12 +51,12 @@ public class NotificationsTest {
     }
 
     @Test
-    void shouldStopAfterInterruptedException() throws Exception {
+    void shouldStopAfterInterruptedExceptionWithinOneSecond() throws Exception {
         doThrow(InterruptedException.class).when(sleeper).sleep(anyInt());
 
         verify(sleeper, onceDuringOneSecond()).sleep(anyInt());
 
-        assertFalse(notifications.isRunning());
+        await().atMost(ONE_SECOND).until(() -> !notifications.isRunning());
     }
 
     @Test
