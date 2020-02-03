@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
 
 import static java.util.Comparator.reverseOrder;
@@ -33,8 +32,7 @@ public class Scoreboard {
 
     private Winner getLatestWinner() {
         Optional<Winner> winner = winnerRepository.getLatest()
-                .getContent()
-                .stream()
+                .getContent().stream()
                 .findFirst();
         return winner.orElse(NO_WINNER);
     }
@@ -46,26 +44,18 @@ public class Scoreboard {
     @HystrixCommand(fallbackMethod = "noRepositoryResponse")
     @GetMapping("/best")
     public Map<String, Long> getSortedPlayers() {
-        Map<String, Long> groupedPlayers = winnerRepository.findAll()
-                .getContent()
-                .stream()
+        Map<String, Long> players = winnerRepository.findAll()
+                .getContent().stream()
                 .collect(groupingBy(Winner::getName, counting()));
-        return sortPlayersByPointsDesc(groupedPlayers);
+        return sortByValueReverse(players);
     }
 
-    private Map<String, Long> sortPlayersByPointsDesc(Map<String, Long> allPlayersGrouped) {
-        return allPlayersGrouped
-                .entrySet()
-                .stream()
+    private Map<String, Long> sortByValueReverse(Map<String, Long> map) {
+        Map<String, Long> sorted = new LinkedHashMap<>();
+        map.entrySet().stream()
                 .sorted(comparingByValue(reverseOrder()))
-                .collect(toMap(
-                        Entry::getKey,
-                        Entry::getValue,
-                        (v1, v2) -> {
-                            throw new IllegalStateException();
-                        },
-                        LinkedHashMap::new
-                ));
+                .forEachOrdered(entry -> sorted.put(entry.getKey(), entry.getValue()));
+        return sorted;
     }
 
     public Map<String, Long> noRepositoryResponse() {

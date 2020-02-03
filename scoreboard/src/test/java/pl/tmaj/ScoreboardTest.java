@@ -38,16 +38,13 @@ public class ScoreboardTest {
     @Test
     public void shouldGetLatestWinner() {
         String best = scoreboard.getBestPlayer();
-
         assertEquals(DUMMY_PLAYER, best);
     }
 
     @Test
     public void shouldGetSortedPlayersByPoints() {
         addWinners(asList(DUMMY_PLAYER, DUMMY_PLAYER, ANOTHER_DUMMY_PLAYER));
-
         Map<String, Long> sorted = scoreboard.getSortedPlayers();
-
         assertEquals(2, sorted.size());
         assertEquals(2, (long) sorted.get(DUMMY_PLAYER));
         assertEquals(1, (long) sorted.get(ANOTHER_DUMMY_PLAYER));
